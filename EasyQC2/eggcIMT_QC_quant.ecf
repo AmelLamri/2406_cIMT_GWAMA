@@ -1,0 +1,226 @@
+##################################################################################################################################################################
+##### EasyQC-script to check CHARGE phase 2 GLI-GWAS results
+##### EasyQC2 version: 1.0
+##### Programmer: Thomas Winkler, 22-05-24
+##### Contact: thomas.winkler@ukr.de
+##################################################################################################################################################################
+
+### Define here 
+###  --pathOut: the path to the output folder
+###  --acolIn/acolInClasses: the columns to be read
+
+DEFINE	--pathOut /path/to/results
+			--acolIn CHR;POS;INFO;EFFECT_ALLELE;NON_EFFECT_ALLELE;EAF_ALL;N;BETA_SNP_M2;SE_SNP_M2;P_SNP_M2;BETA_SNP_M1;SE_SNP_M1_MB;P_SNP_M1_MB;SE_SNP_M1_ROBUST;P_SNP_M1_ROBUST;BETA_INT;SE_INT_MB;P_INT_MB;SE_INT_ROBUST;P_INT_ROBUST;P_JOINT_MB;COV_SNP_INT_MB;P_JOINT_ROBUST;COV_SNP_INT_ROBUST
+			--acolInClasses character;integer;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
+			--strMissing .
+			--strSeparator TAB
+
+### Define here the input files: 
+EASYIN --fileIn /path/to/input/Phase2.ARIC.EA.LDL.LTST.COMBINED.20211104.txt.gz
+EASYIN --fileIn /path/to/input/Phase2.ARIC.EA.HDL.STST.FEMALE.20211104.txt.gz
+### ... 
+### Suggest: RUN this script PER STUDY/ANCESTRY
+### You need different scripts for different ancestries because the AF ref changes
+
+### 220624: added LIFTOVER command; updated reference files
+### 221102: removed filtering on INFO/MAF
+###			added filtering on DF>=20
+###			red dots in study QC plots were low info in REF; now also colouring those with low info in STUDY (blue->low info in study; purple->low info in study AND ref)
+
+##################################################################################################################################################################
+##################################################################################################################################################################
+## EASYQC Scripting interface:
+START EASYQC2
+
+## remove missing values:
+CLEAN --rcdClean is.na(CHR) --strCleanName numDrop.CHR.missing
+CLEAN --rcdClean is.na(POS) --strCleanName numDrop.POS.missing
+CLEAN --rcdClean is.na(EAF_ALL) --strCleanName numDrop.EAF_ALL.missing
+CLEAN --rcdClean is.na(INFO) --strCleanName numDrop.INFO.missing
+CLEAN --rcdClean is.na(N) --strCleanName numDrop.N.missing
+
+## remove monomorphics sites: 
+CLEAN --rcdClean EAF_ALL==0|EAF_ALL==1 --strCleanName numDrop.EAF_ALL.monomorph
+
+## Add MAC and DF columns
+ADDCOL --rcdAddCol signif(2*pmin(EAF_ALL,1-EAF_ALL)*N,4) --colOut MAC_ALL
+ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
+
+## Filter on DF>=20
+CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+
+## remove other missings:
+CLEAN --rcdClean is.na(BETA_SNP_M2) --strCleanName numDrop.BETA_SNP_M2.missing
+CLEAN --rcdClean is.na(SE_SNP_M2) --strCleanName numDrop.SE_SNP_M2.missing
+CLEAN --rcdClean is.na(P_SNP_M2) --strCleanName numDrop.P_SNP_M2.missing
+CLEAN --rcdClean is.na(BETA_SNP_M1) --strCleanName numDrop.BETA_SNP_M1.missing
+CLEAN --rcdClean is.na(SE_SNP_M1_MB) --strCleanName numDrop.SE_SNP_M1_MB.missing
+CLEAN --rcdClean is.na(P_SNP_M1_MB) --strCleanName numDrop.P_SNP_M1_MB.missing
+CLEAN --rcdClean is.na(SE_SNP_M1_ROBUST) --strCleanName numDrop.SE_SNP_M1_ROBUST.missing
+CLEAN --rcdClean is.na(P_SNP_M1_ROBUST) --strCleanName numDrop.P_SNP_M1_ROBUST.missing
+CLEAN --rcdClean is.na(BETA_INT) --strCleanName numDrop.BETA_INT.missing
+CLEAN --rcdClean is.na(SE_INT_MB) --strCleanName numDrop.SE_INT_MB.missing
+CLEAN --rcdClean is.na(P_INT_MB) --strCleanName numDrop.P_INT_MB.missing
+CLEAN --rcdClean is.na(SE_INT_ROBUST) --strCleanName numDrop.SE_INT_ROBUST.missing
+CLEAN --rcdClean is.na(P_INT_ROBUST) --strCleanName numDrop.P_INT_ROBUST.missing
+CLEAN --rcdClean is.na(P_JOINT_MB) --strCleanName numDrop.P_JOINT_MB.missing
+CLEAN --rcdClean is.na(COV_SNP_INT_MB) --strCleanName numDrop.COV_SNP_INT_MB.missing
+CLEAN --rcdClean is.na(P_JOINT_ROBUST) --strCleanName numDrop.P_JOINT_ROBUST.missing
+CLEAN --rcdClean is.na(COV_SNP_INT_ROBUST) --strCleanName numDrop.COV_SNP_INT_ROBUST.missing
+
+## remove invalid values:
+CLEAN --rcdClean EAF_ALL<0|EAF_ALL>1 --strCleanName numDrop.EAF_ALL.invalid
+CLEAN --rcdClean abs(BETA_SNP_M2)==Inf --strCleanName numDrop.BETA_SNP_M2.inf
+CLEAN --rcdClean abs(BETA_SNP_M1)==Inf --strCleanName numDrop.BETA_SNP_M1.inf
+CLEAN --rcdClean abs(BETA_INT)==Inf --strCleanName numDrop.BETA_INT.inf
+
+## remove leading 0's: 
+EDITCOL --rcdEditCol gsub('^0+','',CHR) --colEdit CHR
+EDITCOL --rcdEditCol gsub('^0+','',POS) --colEdit POS
+
+## check and lift to b38 if necessary
+LIFTOVER --colInChr CHR 
+		--colInPos POS 
+		--fileLiftOver /path2LiftoverFile/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
+		--blnCheckLift 1
+
+## create unique cpaid for meta-analysis
+EDITCOL --rcdEditCol toupper(EFFECT_ALLELE) --colEdit EFFECT_ALLELE
+EDITCOL --rcdEditCol toupper(NON_EFFECT_ALLELE) --colEdit NON_EFFECT_ALLELE
+
+CREATECPAID --colInChr CHR 
+			--colInPos POS 
+			--colInEA EFFECT_ALLELE 
+			--colInOA NON_EFFECT_ALLELE 
+			--acolInFreq EAF_ALL
+			--acolInBeta BETA_SNP_M2;BETA_SNP_M1;BETA_INT
+			
+## cpaid is always CHR:POS:A1_A2 with A1 and A2 in alphabetical order! 
+## Reason for alphabetical is that order of ref/alt may be switched between studies 
+## cpaids will be meta-analysed correctly by metal (metal will adjust effects according to ref/alt)
+## EAFs and BETAs will be alligned to A1 and EFFECT_ALLELE/NON_EFFECT_ALLELE will be changed accordingly
+
+## filter duplicate cpaid's / keep the one with higher imp qual
+CLEANDUPLICATES --colInMarker cpaid --strMode criterion --colCrit INFO --strCritDir max
+
+## write out CLEANED files for meta-analysis
+WRITE --strPrefix CLEANED --strSuffix cpaid --strMode gz
+
+## write descriptive stats to *.rep
+EVALSTAT --colStat N
+
+## GC lambdas (are just calculated and NOT applied!) to *.rep
+GC --colPval P_SNP_M2 --blnSuppressCorrection 1
+GC --colPval P_SNP_M1_MB --blnSuppressCorrection 1
+GC --colPval P_SNP_M1_ROBUST --blnSuppressCorrection 1
+GC --colPval P_INT_MB --blnSuppressCorrection 1
+GC --colPval P_INT_ROBUST --blnSuppressCorrection 1
+GC --colPval P_JOINT_MB --blnSuppressCorrection 1
+GC --colPval P_JOINT_ROBUST --blnSuppressCorrection 1
+
+## QQ plots (with GC lambdas)
+QQPLOT --acolQQPlot P_SNP_M2
+		--astrColour black
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.SNP_M2
+		--strMode subplot
+
+QQPLOT --acolQQPlot P_SNP_M1_MB;P_SNP_M1_ROBUST
+		--astrColour black;red
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.SNP_M1_MB_ROBUST
+		--strMode subplot
+
+QQPLOT --acolQQPlot P_INT_MB;P_INT_ROBUST
+		--astrColour black;red
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.INT_MB_ROBUST		
+		--strMode subplot
+
+QQPLOT --acolQQPlot P_JOINT_MB;P_JOINT_ROBUST
+		--astrColour black;red
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.JOINT_MB_ROBUST	
+		--strMode subplot
+
+
+#### CHECK joint 2df from se/cov vs p (MB)
+
+JOINTTEST --colBetaMain BETA_SNP_M1 
+			--colSeMain SE_SNP_M1_MB
+			--colBetaInt BETA_INT 
+			--colSeInt SE_INT_MB
+			--colCovar COV_SNP_INT_MB
+			--colOutPjoint P_JOINT_MB_CALC
+
+SPLOT --rcdSPlotX -log10(P_JOINT_MB)
+		--rcdSPlotY -log10(P_JOINT_MB_CALC)
+		--rcdExclude P_JOINT_MB>0.05&P_JOINT_MB_CALC>0.05
+		--arcdAdd2Plot abline(a=0,b=1,col="red")
+		--strMode subplot
+		--strPlotName sp.check_JOINT_MB
+
+#### CHECK joint 2df from se/cov vs p (ROBUST)
+
+JOINTTEST --colBetaMain BETA_SNP_M1 
+			--colSeMain SE_SNP_M1_ROBUST
+			--colBetaInt BETA_INT 
+			--colSeInt SE_INT_ROBUST
+			--colCovar COV_SNP_INT_ROBUST
+			--colOutPjoint P_JOINT_ROBUST_CALC
+			
+SPLOT --rcdSPlotX -log10(P_JOINT_ROBUST)
+		--rcdSPlotY -log10(P_JOINT_ROBUST_CALC)
+		--rcdExclude P_JOINT_ROBUST>0.05&P_JOINT_ROBUST_CALC>0.05
+		--arcdAdd2Plot abline(a=0,b=1,col="red")
+		--strMode subplot
+		--strPlotName sp.check_JOINT_ROBUST
+
+## AF Checks
+
+### Please allign AF ref ancestry to the EASYIN study ancestry
+
+MERGE 	--colInMarker cpaid
+		--fileRef /path2ref/1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+			--acolIn cpaid;AA1_Freq;R2
+			--acolInClasses character;numeric;numeric
+		--strRefSuffix .ref
+		--colRefMarker cpaid
+		--blnInAll 0
+		--blnRefAll 0
+		--blnWriteNotInRef 1
+		
+## List at --fileRef one of the 5 ancestry-specific allele frequency references
+# 1000G_AFR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_AMR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_EAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_SAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+
+## Create AF plot (red: low impuation qualiyt in 1000G-TopMed imputation)
+AFCHECK --colInFreq EAF_ALL 
+		--colRefFreq AA1_Freq.ref 
+		--arcdColourCrit R2.ref<0.3;INFO<0.3;INFO<0.3&R2.ref<0.3
+		--astrColour red;blue;purple
+		--blnPlotAll 0
+		--numLimOutlier 0.2
+
+## Create BAR plot that visualizes outliers (red) and missings (grey; compared to TopMed ref) and fine variants (green)
+CALCULATE --rcdCalc length(cpaid) --strCalcName AFCHECK.Checked
+
+RADDCOL --rcdRAddCol AFCHECK.Checked-AFCHECK.numOutlier --colROut AFok
+RADDCOL --rcdRAddCol AFCHECK.numOutlier --colROut AFoutlier
+
+BRPLOT --acolBRPlot AFok;AFoutlier;NotInRef
+		--astrColour green;red;grey
+		--numParLas 1 
+		--strPlotName BARPLOT.HighQualVar.AFchecks
+
+
+STOP EASYQC2
+#################################################################################################################
+#################################################################################################################

@@ -1,0 +1,426 @@
+##################################################################################################################################################################
+##### EasyQC-script to check CHARGE phase 2 GLI-GWAS results
+##### EasyQC2 version: 1.0
+##### Programmer: Thomas Winkler, 22-05-24
+##### Contact: thomas.winkler@ukr.de
+##################################################################################################################################################################
+
+
+
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Cleaned_GWAS/
+			--acolIn CHR;POS;INFO;EFFECT_ALLELE;NON_EFFECT_ALLELE;EAF;N;BETA;SE;PVAL
+			--acolInClasses character;integer;numeric;character;character;numeric;numeric;numeric;numeric;numeric
+			--strMissing .
+			--strSeparator TAB
+
+### Define here the input files: 
+
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCFxAGE.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCFxAGE.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCFxAGE.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCFxAGE.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCNxAGE.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCNxAGE.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCNxAGE.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCNxAGE.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCFxAGE.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCFxAGE.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCFxAGE.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCFxAGE.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCNxAGE.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCNxAGE.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCNxAGE.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCNxAGE.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCFxAGE.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCFxAGE.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCFxAGE.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCFxAGE.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCNxAGE.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCNxAGE.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCNxAGE.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCNxAGE.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.AAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.AAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.AAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.AAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADL.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.ADO.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.OAD.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.AAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.AAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.AAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.AAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADL.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.ADO.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCN.OAD.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.AAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.AAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.AAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.AAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADL.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.ADO.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCF.OAD.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.AAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.AAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.AAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.AAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADL.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.ADO.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.meanRCN.OAD.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.AAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.AAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.AAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.AAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADL.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.ADO.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCF.OAD.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.AAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.AAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.AAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.AAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADL.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.ADO.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MW.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MW.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MW.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.MW.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.WOMEN.adjBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.WOMEN.adjBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.WOMEN.noBMI.EUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.minRCN.OAD.WOMEN.noBMI.nonEUR.KL.230922.zip
+#EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw_GWAS/CP_cIMT.maxRCF.AAD.MW.adjBMI.EUR.KL.230922.txt
+
+
+
+
+
+
+
+### ... 
+### Suggest: RUN this script PER STUDY/ANCESTRY
+### You need different scripts for different ancestries because the AF ref changes
+
+### 220624: added LIFTOVER command; updated reference files
+### 221102: removed filtering on INFO/MAF
+###			added filtering on DF>=20
+###			red dots in study QC plots were low info in REF; now also colouring those with low info in STUDY (blue->low info in study; purple->low info in study AND ref)
+
+##################################################################################################################################################################
+##################################################################################################################################################################
+## EASYQC Scripting interface:
+START EASYQC2
+
+## remove missing values:
+CLEAN --rcdClean is.na(CHR) --strCleanName numDrop.CHR.missing
+CLEAN --rcdClean is.na(POS) --strCleanName numDrop.POS.missing
+CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
+CLEAN --rcdClean is.na(INFO) --strCleanName numDrop.INFO.missing
+CLEAN --rcdClean is.na(N) --strCleanName numDrop.N.missing
+
+## remove monomorphics sites: 
+CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
+
+## Add MAC and DF columns
+ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
+ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
+
+## Filter on DF>=20
+CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+
+## remove other missings:
+CLEAN --rcdClean is.na(BETA) --strCleanName numDrop.BETA.missing
+CLEAN --rcdClean is.na(SE) --strCleanName numDrop.SE.missing
+CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
+
+
+## remove invalid values:
+CLEAN --rcdClean EAF<0|EAF>1 --strCleanName numDrop.EAF.invalid
+CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
+
+
+## remove leading 0's: 
+EDITCOL --rcdEditCol gsub('^0+','',CHR) --colEdit CHR
+EDITCOL --rcdEditCol gsub('^0+','',POS) --colEdit POS
+
+## check and lift to b38 if necessary
+#LIFTOVER --colInChr CHR 
+#		--colInPos POS 
+#		--fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
+#		--blnCheckLift 1
+
+## create unique cpaid for meta-analysis
+EDITCOL --rcdEditCol toupper(EFFECT_ALLELE) --colEdit EFFECT_ALLELE
+EDITCOL --rcdEditCol toupper(NON_EFFECT_ALLELE) --colEdit NON_EFFECT_ALLELE
+
+CREATECPAID --colInChr CHR 
+			--colInPos POS 
+			--colInEA EFFECT_ALLELE 
+			--colInOA NON_EFFECT_ALLELE 
+			--acolInFreq EAF
+			--acolInBeta BETA
+			
+## cpaid is always CHR:POS:A1_A2 with A1 and A2 in alphabetical order! 
+## Reason for alphabetical is that order of ref/alt may be switched between studies 
+## cpaids will be meta-analysed correctly by metal (metal will adjust effects according to ref/alt)
+## EAFs and BETAs will be alligned to A1 and EFFECT_ALLELE/NON_EFFECT_ALLELE will be changed accordingly
+
+## filter duplicate cpaid's / keep the one with higher imp qual
+CLEANDUPLICATES --colInMarker cpaid --strMode criterion --colCrit INFO --strCritDir max
+
+## write out CLEANED files for meta-analysis
+WRITE --strPrefix CLEANED --strSuffix cpaid --strMode gz
+
+## write descriptive stats to *.rep
+EVALSTAT --colStat N
+
+## GC lambdas (are just calculated and NOT applied!) to *.rep
+GC --colPval PVAL --blnSuppressCorrection 1
+
+
+## QQ plots (with GC lambdas)
+QQPLOT --acolQQPlot PVAL
+		--astrColour black
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.SNP
+		--strMode subplot
+
+
+
+
+
+## AF Checks
+
+### Please allign AF ref ancestry to the EASYIN study ancestry
+
+#MERGE 	--colInMarker cpaid
+#		--fileRef /genetics/TopMed/Charge/1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+#			--acolIn cpaid;AA1_Freq;R2
+#			--acolInClasses character;numeric;numeric
+#		--strRefSuffix .ref
+#		--colRefMarker cpaid
+#		--blnInAll 0
+#		--blnRefAll 0
+#		--blnWriteNotInRef 1
+		
+## List at --fileRef one of the 5 ancestry-specific allele frequency references
+# 1000G_AFR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_AMR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_EAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_SAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+
+## Create AF plot (red: low impuation qualiyt in 1000G-TopMed imputation)
+# AFCHECK --colInFreq EAF 
+# 		--colRefFreq AA1_Freq.ref 
+# 		--arcdColourCrit R2.ref<0.3;INFO<0.3;INFO<0.3&R2.ref<0.3
+# 		--astrColour red;blue;purple
+# 		--blnPlotAll 0
+# 		--numLimOutlier 0.2
+
+## Create BAR plot that visualizes outliers (red) and missings (grey; compared to TopMed ref) and fine variants (green)
+# CALCULATE --rcdCalc length(cpaid) --strCalcName AFCHECK.Checked
+
+RADDCOL --rcdRAddCol AFCHECK.Checked-AFCHECK.numOutlier --colROut AFok
+RADDCOL --rcdRAddCol AFCHECK.numOutlier --colROut AFoutlier
+
+BRPLOT --acolBRPlot AFok;AFoutlier;NotInRef
+		--astrColour green;red;grey
+		--numParLas 1 
+		--strPlotName BARPLOT.HighQualVar.AFchecks
+
+
+STOP EASYQC2
+#################################################################################################################
+#################################################################################################################

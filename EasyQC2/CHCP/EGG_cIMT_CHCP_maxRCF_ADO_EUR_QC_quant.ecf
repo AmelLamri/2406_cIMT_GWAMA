@@ -1,0 +1,185 @@
+##################################################################################################################################################################
+##### EasyQC-script to check CHARGE phase 2 GLI-GWAS results
+##### EasyQC2 version: 1.0
+##### Programmer: Thomas Winkler, 22-05-24
+##### Contact: thomas.winkler@ukr.de
+##################################################################################################################################################################
+
+
+
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Cleaned/maxRCF_ADO/EUR
+		--strSeparator TAB
+		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;HWE_P;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
+		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
+		--strMissing NA
+ADJUSTALLELES --colRefA1 EFFECT_ALLELE
+              --colRefA2 NON_EFFECT_ALLELE
+		      --colInStrand STRAND
+              --acolInFreq EAF
+              --colInBeta BETA
+			  --colInA1 EFFECT_ALLELE
+			  --colInA2 NON_EFFECT_ALLELE
+
+### Define here the input files: 
+
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw//Modified/CP_cIMT.maxRCF.ADO.MEN.adjBMI.EUR.KL.230922.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw//Modified/CP_cIMT.maxRCF.ADO.MEN.noBMI.EUR.KL.230922.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw//Modified/CP_cIMT.maxRCF.ADO.MW.adjBMI.EUR.KL.230922.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw//Modified/CP_cIMT.maxRCF.ADO.MW.noBMI.EUR.KL.230922.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw//Modified/CP_cIMT.maxRCF.ADO.WOMEN.adjBMI.EUR.KL.230922.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw//Modified/CP_cIMT.maxRCF.ADO.WOMEN.noBMI.EUR.KL.230922.txt.gz
+
+
+###			red dots in study QC plots were low info in REF; now also colouring those with low info in STUDY (blue->low info in study; purple->low info in study AND ref)
+
+##################################################################################################################################################################
+##################################################################################################################################################################
+## EASYQC Scripting interface:
+START EASYQC2
+
+## remove missing values:
+  CLEAN --rcdClean is.na(CHR) --strCleanName numDrop.CHR.missing
+  CLEAN --rcdClean is.na(POS) --strCleanName numDrop.POS.missing
+  CLEAN --rcdClean is.na(INFO) --strCleanName numDrop.INFO.missing
+  CLEAN --rcdClean is.na(N) --strCleanName numDrop.N.missing
+  CLEAN --rcdClean is.na(BETA) --strCleanName numDrop.BETA.missing
+  CLEAN --rcdClean is.na(SE) --strCleanName numDrop.SE.missing
+  CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
+  CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
+   # do not drop   these since they are chr X variants in this study 
+
+## remove monomorphics sites: 
+  CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
+
+## Add MAC and DF columns
+  ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
+  ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
+
+## Filter on MAF MAC_ALL or DF>=20
+# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
+  CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
+
+## remove invalid values:
+  CLEAN --rcdClean EAF<0|EAF>1 --strCleanName numDrop.EAF.invalid
+  CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
+  CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
+  CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
+  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
+
+# Filter SNPs on the basis of genotype quality 
+  CLEAN --rcdClean is.na(INFO_TYPE) --strCleanName numDrop.MissingInformationType 
+  CLEAN --rcdClean INFO_TYPE==0&INFO<1 --strCleanName numDrop.Genotyped.LowInformation
+  CLEAN --rcdClean (INFO_TYPE!= 0)&(is.na(INFO)) --strCleanName numDrop.Imputed.MissingInformation
+
+  CLEAN --rcdClean (INFO_TYPE!=0&INFO<0.3)|(INFO_TYPE==2&INFO<0.4)| (INFO_TYPE==3&INFO<0.8) --strCleanName numDrop.LowInformation
+
+# Filter and count SNPs on sex chromosomes. Keep the sex-chromosomal SNPs in a separate file for optional subsequent analyses. 
+  CLEAN --rcdClean !CHR%in%c(1:22,NA) --strCleanName numDropSNP_ChrXY --blnWriteCleaned 1
+
+
+## remove leading 0's: 
+EDITCOL --rcdEditCol gsub('^0+','',CHR) --colEdit CHR
+EDITCOL --rcdEditCol gsub('^0+','',POS) --colEdit POS
+
+## check and lift to b38 if necessary
+#LIFTOVER --colInChr CHR 
+#		--colInPos POS 
+#		--fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
+#		--blnCheckLift 1
+
+## create unique cpaid for meta-analysis
+EDITCOL --rcdEditCol toupper(EFFECT_ALLELE) --colEdit EFFECT_ALLELE
+EDITCOL --rcdEditCol toupper(NON_EFFECT_ALLELE) --colEdit NON_EFFECT_ALLELE
+
+CREATECPAID --colInChr CHR 
+			--colInPos POS 
+			--colInEA EFFECT_ALLELE 
+			--colInOA NON_EFFECT_ALLELE 
+			--acolInFreq EAF
+			--acolInBeta BETA
+			
+## cpaid is always CHR:POS:A1_A2 with A1 and A2 in alphabetical order! 
+## Reason for alphabetical is that order of ref/alt may be switched between studies 
+## cpaids will be meta-analysed correctly by metal (metal will adjust effects according to ref/alt)
+## EAFs and BETAs will be alligned to A1 and EFFECT_ALLELE/NON_EFFECT_ALLELE will be changed accordingly
+
+## filter duplicate cpaid's / keep the one with higher imp qual
+CLEANDUPLICATES --colInMarker cpaid --strMode criterion --colCrit INFO --strCritDir max
+
+## write out CLEANED files for meta-analysis
+WRITE --strPrefix CLEANED --strSuffix cpaid --strMode gz
+
+## write descriptive stats to *.rep
+EVALSTAT --colStat N
+
+## GC lambdas (are just calculated and NOT applied!) to *.rep
+GC --colPval PVAL --blnSuppressCorrection 1
+
+
+## QQ and R plots (with GC lambdas)
+QQPLOT --acolQQPlot PVAL
+		--astrColour black
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.SNP
+		--strMode subplot
+
+
+RPLOT --rcdRPlotX N_max
+--rcdRPlotY Lambda.PVAL.GC
+--arcdAdd2Plot abline(h=1,col='orange');abline(h=1.1,col='red')
+--strAxes lim(0,NULL,0,NULL)
+--strPlotName GC-PLOT
+
+
+
+## AF Checks
+
+### Please allign AF ref ancestry to the EASYIN study ancestry
+
+MERGE 	--colInMarker cpaid
+		--fileRef /genetics/TopMed/Charge/1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+			--acolIn cpaid;AA1_Freq;R2
+			--acolInClasses character;numeric;numeric
+		--strRefSuffix .ref
+		--colRefMarker cpaid
+		--blnInAll 0
+		--blnRefAll 0
+		--blnWriteNotInRef 1
+		
+## List at --fileRef one of the 5 ancestry-specific allele frequency references
+# 1000G_AFR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_AMR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_EAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+# 1000G_SAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
+
+
+
+
+AFCHECK --colInFreq EAF 
+		--colRefFreq AA1_Freq.ref 
+		--arcdColourCrit R2.ref<0.3;INFO<0.3;INFO<0.3&R2.ref<0.3
+		--astrColour red;blue;purple
+		--blnPlotAll 0
+		--numLimOutlier 0.2
+
+
+
+## Create BAR plot that visualizes outliers (red) and missings (grey; compared to TopMed ref) and fine variants (green)
+
+CALCULATE --rcdCalc length(cpaid) --strCalcName AFCHECK.Checked
+
+RADDCOL --rcdRAddCol AFCHECK.Checked-AFCHECK.numOutlier --colROut AFok
+RADDCOL --rcdRAddCol AFCHECK.numOutlier --colROut AFoutlier
+
+BRPLOT --acolBRPlot AFok;AFoutlier;NotInRef
+		--astrColour green;red;grey
+		--numParLas 1 
+		--strPlotName BARPLOT.HighQualVar.AFchecks
+
+
+STOP EASYQC2
+#################################################################################################################
+#################################################################################################################
