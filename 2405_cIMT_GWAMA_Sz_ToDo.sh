@@ -1,5 +1,5 @@
 PANIC: ask them why only mean LCF and no nother files 
-
+GenR : ask them men and women !! 
 
 
 CHCP !!!! drop EAF in men !!! CP_cIMT.maxRCF.ADO.MEN.adjBMI.EUR.KL.230922.txt.gz

@@ -2,20 +2,23 @@
 #This code complies the differents codes used to run the GWAS meta-analysis of GWAMA 
 #path on git /y/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Scripts 
 hostname=cat /proc/sys/kernel/hostname
-hostname=rigenep1
-if[ $(hostname) = rigenep1 ] | [ $(hostname) = rigenep2 ] | [ $(hostname) = ristatp25 ] | [ $(hostname) = ristatp23 ] | [ $(hostname) = ristatp21 ] | [ $(hostname) = ristatp19 ] | [ $(hostname) = ristatp17 ];then 
+host=rigenep1
+if [ $(hostname) = rigenep1 ] | [ $(hostname) = rigenep2 ] | [ $(hostname) = ristatp25 ] | [ $(hostname) = ristatp23 ] | [ $(hostname) = ristatp21 ] | [ $(hostname) = ristatp19 ] | [ $(hostname) = ristatp17 ];then 
 echo TRUE 
 m_p=/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI
 metal=/genetics/Programs/Linux-metal/generic-metal/metal 
 fi 
 
+m_p=/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI
+metal=/genetics/Programs/Linux-metal/generic-metal/metal 
 o_p=$m_p/Results
 s_p=$m_p/Scripts
-
+eq2_p=$s_p/EasqyQC2
 
 # Prep files for EasyQC 
   # ABCD
 
+    ABCD_phens=(ADO_maxCCA ADO_meanCCA)
     # in ABCD files, the header line is tab delimited, but the rest of the table is space delimited, which prevents it from being read normally by easyQC
   
     cd /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw
@@ -35,7 +38,12 @@ s_p=$m_p/Scripts
       gzip /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified/$filei
     
     done
-  
+    cp 
+  # copy easyQC code and make 
+    cp $eq2_p/ABCD/ADO_CCA/EGG_cIMT_ABCD_ADO_maxCCA_QC_quant.ecf $eq2_p/ABCD/ADO_CCA/EGG_cIMT_ABCD_ADO_meanCCA_QC_quant.ecf
+    sed -i -e 's/maxCCA/meanCCA/g' $eq2_p/ABCD/ADO_CCA/EGG_cIMT_ABCD_ADO_meanCCA_QC_quant.ecf  
+
+
 
   # PANIC
     panicp=/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/PANIC/Raw
@@ -98,15 +106,24 @@ s_p=$m_p/Scripts
       done
   
   # FAMILY 
+  # NFBC    
+
+#  genR files have rows with comments at the top, need to delete them first 
+  cd /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/  Cleaned/CLD_LCF
+  gunzip  "CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid.gz"
   
-
-
-
-
+  tail -n +42 "CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid_clean" >   "CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid_clean"
+  
+  gzip CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid_clean 
+  
+  cd /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch2/  Cleaned/CLD_LCF
+  
+  gunzip CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid.1.gz
+  tail -n +42 CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid.1 >   CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid.1_clean
+  
+  gzip CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid.1_clean
+  
+  
 # Run GWAMA for maxIMT 
-  cd $o_p/GWAMA 
-  $metal $s_p/METAL_MW_maxIMT_NoAdjBMI.metal > $o_p/GWAMA/maxIMT_ADO/METAL_MW_maxIMT_NoAdjBMI.log
-
-# explore GWAMA results 
-
-
+  cd $o_p/GWAMA/maxIMT_ADO
+  $metal $s_p/2211_cIMT_GWAMA_S2_RunMetal_MW_ADO_maxIMT_NoAdjBMI.metal > $o_p/GWAMA/maxIMT_ADO/METAL_MW_maxIMT_NoAdjBMI_240619.log
