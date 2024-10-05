@@ -1,0 +1,172 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|       EasyQC2	   |     1.1.1.b5  |   01/September/2022  |
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|  (C) 2013 Thomas Winkler, GNU General Public License, v3   |
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|  For bug-report, please e-mail:                            |
+|  thomas.winkler@klinik.uni-regensburg.de                   |
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
++++++
+Starting Easy2: 2024-09-26 20:38:17 
+Running script  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Scripts/QC/ABCD/ABCD_ADO_maxCCA_EUR_QC_quant.ecf ...
+
++++++
+Getting list of input files ...
+Using:
+   +  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MEN.adjBMI.EUR.EM.20230626.txt.gz 
+   +  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MEN.noBMI.EUR.EM.20230626.txt.gz 
+   +  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MW.adjBMI.EUR.EM.20230626.txt.gz 
+   +  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MW.noBMI.EUR.EM.20230626.txt.gz 
+   +  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.WOMEN.adjBMI.EUR.EM.20230626.txt.gz 
+   +  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.WOMEN.noBMI.EUR.EM.20230626.txt.gz 
+
++++++
+Default output path is 
+/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/QCed/ADO/maxCCA/EUR/
+
++++++
+Performing validity check on 10 rows from each file :
+
+   +  EGG_cIMT.maxCCA.ADO.MEN.adjBMI.EUR.EM.20230626.txt.gz -> OK
+   +  EGG_cIMT.maxCCA.ADO.MEN.noBMI.EUR.EM.20230626.txt.gz -> OK
+   +  EGG_cIMT.maxCCA.ADO.MW.adjBMI.EUR.EM.20230626.txt.gz -> OK
+   +  EGG_cIMT.maxCCA.ADO.MW.noBMI.EUR.EM.20230626.txt.gz -> OK
+   +  EGG_cIMT.maxCCA.ADO.WOMEN.adjBMI.EUR.EM.20230626.txt.gz -> OK
+   +  EGG_cIMT.maxCCA.ADO.WOMEN.noBMI.EUR.EM.20230626.txt.gz -> OK
+ Passed validity check!
+
++++++
+Processing file: EGG_cIMT.maxCCA.ADO.MEN.adjBMI.EUR.EM.20230626.txt.gz 
+   + Reading  /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MEN.adjBMI.EUR.EM.20230626.txt.gz ... 
+	** Data reading time: 0.5 Minutes
+	** Current memory allocated: 4567840 
+   + CLEAN 
+      --rcdClean is.na(CHR) 
+      --strCleanName numDrop.CHR.missing
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 4686128 
+   + CLEAN 
+      --rcdClean is.na(POS) 
+      --strCleanName numDrop.POS.missing
+	** Function evaluation time: 0.02 Minutes
+	** Current memory allocated: 3449032 
+   + CLEAN 
+      --rcdClean is.na(N) 
+      --strCleanName numDrop.N.missing
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3449032 
+   + CLEAN 
+      --rcdClean is.na(BETA) 
+      --strCleanName numDrop.BETA.missing
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3449032 
+   + CLEAN 
+      --rcdClean is.na(SE) 
+      --strCleanName numDrop.SE.missing
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3449032 
+   + CLEAN 
+      --rcdClean is.na(PVAL) 
+      --strCleanName numDrop.PVAL.missing
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3449032 
+   + CLEAN 
+      --rcdClean is.na(EAF) 
+      --strCleanName numDrop.EAF.missing
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3449032 
+   + CLEAN 
+      --rcdClean EAF==0|EAF==1 
+      --strCleanName numDrop.EAF.monomorph
+	** Function evaluation time: 0.02 Minutes
+	** Current memory allocated: 3567320 
+   + ADDCOL 
+      --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) 
+      --colOut MAC_ALL
+	** Function evaluation time: 0.05 Minutes
+	** Current memory allocated: 4572768 
+   + ADDCOL 
+      --rcdAddCol signif(MAC_ALL*INFO,4) 
+      --colOut DF_ALL
+	** Function evaluation time: 0.08 Minutes
+	** Current memory allocated: 4691056 
+   + CLEAN 
+      --rcdClean N<30 
+      --strCleanName numDrop_Nlt30
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3626464 
+   + CLEAN 
+      --rcdClean MAC_ALL<=6 
+      --strCleanName numDrop_MAClet6
+	** Function evaluation time: 0.02 Minutes
+	** Current memory allocated: 4765600 
+   + CLEAN 
+      --rcdClean EAF<0|EAF>1 
+      --strCleanName numDrop.EAF.invalid
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3496600 
+   + CLEAN 
+      --rcdClean abs(BETA)==Inf 
+      --strCleanName numDrop.BETA.inf
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3445020 
+   + CLEAN 
+      --rcdClean PVAL<0|PVAL>1 
+      --strCleanName numDrop.invalid.P
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3496600 
+   + CLEAN 
+      --rcdClean SE<=0|SE==Inf 
+      --strCleanName numDrop.invalid.SE
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3496600 
+   + CLEAN 
+      --rcdClean BETA<=0|BETA==Inf 
+      --strCleanName numDrop.invalid.BETA
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 4135776 
+   + CLEAN 
+      --rcdClean is.na(INFO_TYPE) 
+      --strCleanName numDrop.MissingInformationType
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3000928 
+   + CLEAN 
+      --rcdClean INFO_TYPE==0&INFO<1 
+      --strCleanName numDrop.Genotyped.LowInformation
+EASY WARNING:
+ 21810 rows are set to FALSE due to missing values in evaluation of numDrop.Genotyped.LowInformation!!!!
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3000928 
+   + CLEAN 
+      --rcdClean (INFO_TYPE!= 0)&(is.na(INFO)) 
+      --strCleanName numDrop.Imputed.MissingInformation
+	** Function evaluation time: 0 Minutes
+	** Current memory allocated: 3000928 
+   + CLEAN 
+      --rcdClean (INFO_TYPE!=0&INFO<0.3)|(INFO_TYPE==2&INFO<0.4)| (INFO_TYPE==3&INFO<0.8) 
+      --strCleanName numDrop.LowInformation
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3543508 
+   + CLEAN 
+      --rcdClean !CHR%in%c(1:22,NA) 
+      --strCleanName numDropSNP_ChrXY 
+      --blnWriteCleaned 1
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3543508 
+   + EDITCOL 
+      --rcdEditCol gsub('^0+','',CHR) 
+      --colEdit CHR
+	** Function evaluation time: 0.01 Minutes
+	** Current memory allocated: 3543508 
+   + EDITCOL 
+      --rcdEditCol gsub('^0+','',POS) 
+      --colEdit POS
+	** Function evaluation time: 0.1 Minutes
+	** Current memory allocated: 3543508 
+   + LIFTOVER 
+      --colInChr CHR 
+      --colInPos POS 
+      --fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz 
+      --blnCheckLift 1
+   + Reading  /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz ... 

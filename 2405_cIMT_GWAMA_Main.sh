@@ -1,19 +1,20 @@
 # DESCIPTION 
 #This code complies the differents codes used to run the GWAS meta-analysis of GWAMA 
 #path on git /y/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Scripts 
-hostname=cat /proc/sys/kernel/hostname
-host=rigenep1
-if [ $(hostname) = rigenep1 ] | [ $(hostname) = rigenep2 ] | [ $(hostname) = ristatp25 ] | [ $(hostname) = ristatp23 ] | [ $(hostname) = ristatp21 ] | [ $(hostname) = ristatp19 ] | [ $(hostname) = ristatp17 ];then 
-echo TRUE 
-m_p=/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI
-metal=/genetics/Programs/Linux-metal/generic-metal/metal 
-fi 
+    bash
+    hostname=cat /proc/sys/kernel/hostname
+    host=rigenep1
+    if [ $(hostname) = rigenep1 ] | [ $(hostname) = rigenep2 ] | [ $(hostname) = ristatp25 ] | [ $(hostname) = ristatp23 ] | [ $(hostname) = ristatp21 ] | [ $(hostname) = ristatp19 ] | [ $(hostname) = ristatp17 ];then 
+    echo TRUE 
+    m_p=/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI
+    metal=/genetics/Programs/Linux-metal/generic-metal/metal 
+    fi 
 
-m_p=/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI
-metal=/genetics/Programs/Linux-metal/generic-metal/metal 
-o_p=$m_p/Results
-s_p=$m_p/Scripts
-eq2_p=$s_p/EasqyQC2
+    m_p=/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI
+    metal=/genetics/Programs/Linux-metal/generic-metal/metal 
+    o_p=$m_p/Results
+    s_p=$m_p/Scripts
+    eq2_p=$s_p/EasqyQC2
 
 # Prep files for EasyQC 
   # ABCD
@@ -108,7 +109,7 @@ eq2_p=$s_p/EasqyQC2
   # FAMILY 
   # NFBC    
 
-#  genR files have rows with comments at the top, need to delete them first 
+# genR files have rows with comments at the top, need to delete them first 
   cd /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/  Cleaned/CLD_LCF
   gunzip  "CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid.gz"
   
@@ -124,6 +125,47 @@ eq2_p=$s_p/EasqyQC2
   gzip CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid.1_clean
   
   
-# Run GWAMA for maxIMT 
-  cd $o_p/GWAMA/maxIMT_ADO
-  $metal $s_p/2211_cIMT_GWAMA_S2_RunMetal_MW_ADO_maxIMT_NoAdjBMI.metal > $o_p/GWAMA/maxIMT_ADO/METAL_MW_maxIMT_NoAdjBMI_240619.log
+# Run GWAMA 
+  # OAD 
+   # EUR 
+    # maxIMT 
+      # noBMI 
+        cd $o_p/GWAMA/OAD/EUR/maxLCFp/noBMI
+
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_MW_noBMI.metal > 241005_maxIMT_OAD_EUR_MW_noBMI_GWAMA1.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_W_noBMI.metal   > 241005_maxIMT_OAD_EUR_W_noBMI_GWAMA.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_M_noBMI.metal   > 241005_maxIMT_OAD_EUR_M_noBMI_GWAMA.log
+
+      # adjBMI          
+        cd $o_p/GWAMA/OAD/EUR/maxLCFp/adjBMI/
+
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_MW_adjBMI.metal > 241005_maxIMT_OAD_EUR_MW_adjBMI_GWAMA1.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_W_adjBMI.metal   > 241005_maxIMT_OAD_EUR_W_adjBMI_GWAMA1.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_M_adjBMI.metal   > 241005_maxIMT_OAD_EUR_M_adjBMI_GWAMA1.log
+
+
+  # ADL
+    # EUR 
+     # MW
+       cd $o_p/GWAMA/ADL/EUR/maxLCFp/noBMI
+       $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_ADL_EUR_MW_noBMI.metal > 240926_maxIMT_ADL_EUR_MW_noBMI_GWAMA.log
+       
+       cd $o_p/GWAMA/ADL/EUR/maxLCFp/adjBMI
+       $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_ADL_EUR_MW_adjBMI.metal > 240926_maxIMT_ADL_EUR_MW_adjBMI_GWAMA.log
+
+  # ADO 
+  
+    cd $o_p/GWAMA/ADO/EUR/maxLCFp/noBMI
+    $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_ADO_EUR_MW_noBMI.metal > 240926_maxIMT_ADO_EUR_MW_noBMI_GWAMA.log
+    
+    cd $o_p/GWAMA/ADO/EUR/maxLCFp/adjBMI
+    $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_ADO_EUR_MW_adjBMI.metal > 240926_maxIMT_ADO_EUR_MW_adjBMI_GWAMA.log
+
+  # YAD 
+  
+    cd $o_p/GWAMA/YAD/EUR/maxLCFp/noBMI
+    $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_YAD_EUR_MW_noBMI.metal > 240926_maxIMT_YAD_EUR_MW_noBMI_GWAMA.log
+    
+    cd $o_p/GWAMA/YAD/EUR/maxLCFp/adjBMI
+    $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_YAD_EUR_MW_adjBMI.metal > 240926_maxIMT_YAD_EUR_MW_adjBMI_GWAMA.log
+

@@ -7,7 +7,7 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Cleaned/ADO_CCA
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/QCed/ADO/maxCCA/EUR/
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;HWE_P;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
@@ -23,12 +23,12 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 #numeric;numeric;numeric;integer;numeric;numeric;numeric;  numeric;numeric;numeric;numeric;   numeric
 
 ### Define here the input files: 
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified/EGG_cIMT.maxCCA.ADO.MEN.adjBMI.EUR.EM.20230626.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified/EGG_cIMT.maxCCA.ADO.MEN.noBMI.EUR.EM.20230626.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified/EGG_cIMT.maxCCA.ADO.MW.adjBMI.EUR.EM.20230626.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified/EGG_cIMT.maxCCA.ADO.MW.noBMI.EUR.EM.20230626.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified/EGG_cIMT.maxCCA.ADO.WOMEN.adjBMI.EUR.EM.20230626.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified/EGG_cIMT.maxCCA.ADO.WOMEN.noBMI.EUR.EM.20230626.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MEN.adjBMI.EUR.EM.20230626.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MEN.noBMI.EUR.EM.20230626.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MW.adjBMI.EUR.EM.20230626.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.MW.noBMI.EUR.EM.20230626.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.WOMEN.adjBMI.EUR.EM.20230626.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ABCD/Raw/Modified//EGG_cIMT.maxCCA.ADO.WOMEN.noBMI.EUR.EM.20230626.txt.gz
 
 
 ##################################################################################################################################################################

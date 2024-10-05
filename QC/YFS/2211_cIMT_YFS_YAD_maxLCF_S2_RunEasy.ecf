@@ -7,30 +7,27 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Cleaned/OAD/maxRCF/nonEUR
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Cleaned/YAD/maxLCF
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;HWE_P;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
 		--strMissing NA
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
-              --colRefA2 NON_EFFECT_ALLELE
 		      --colInStrand STRAND
               --acolInFreq EAF
-			  --colInA1 EFFECT_ALLELE
-			  --colInA2 NON_EFFECT_ALLELE
+              --colInBeta BETA
+			  --colRefA2 NON_EFFECT_ALLELE
+
 
 ### Define here the input files: 
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.YAD.MW.adjBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.YAD.MW.noBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.YAD.MEN.adjBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.YAD.MEN.noBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.YAD.WOMEN.adjBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.YAD.WOMEN.noBMI.YFS.EUR.LPL.231001.txt.gz
 
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/OAD/CP_cIMT.maxRCF.OAD.MEN.adjBMI.nonEUR.KL.230922_2.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/OAD/CP_cIMT.maxRCF.OAD.MEN.noBMI.nonEUR.KL.230922_2.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/OAD/CP_cIMT.maxRCF.OAD.MW.adjBMI.nonEUR.KL.230922_2.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/OAD/CP_cIMT.maxRCF.OAD.MW.noBMI.nonEUR.KL.230922_2.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/OAD/CP_cIMT.maxRCF.OAD.WOMEN.adjBMI.nonEUR.KL.230922_2.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/OAD/CP_cIMT.maxRCF.OAD.WOMEN.noBMI.nonEUR.KL.230922_2.txt.gz
- 
-###			red dots in study QC plots were low info in REF; now also colouring those with low info in STUDY (blue->low info in study; purple->low info in study AND ref)
 
-##################################################################################################################################################################
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
 START EASYQC2
@@ -39,26 +36,28 @@ START EASYQC2
   CLEAN --rcdClean is.na(CHR) --strCleanName numDrop.CHR.missing
   CLEAN --rcdClean is.na(POS) --strCleanName numDrop.POS.missing
   CLEAN --rcdClean is.na(INFO) --strCleanName numDrop.INFO.missing
+
   CLEAN --rcdClean is.na(N) --strCleanName numDrop.N.missing
   CLEAN --rcdClean is.na(BETA) --strCleanName numDrop.BETA.missing
   CLEAN --rcdClean is.na(SE) --strCleanName numDrop.SE.missing
   CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
   CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
-   # do not drop   these since they are chr X variants in this study 
 
 ## remove monomorphics sites: 
-  CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
+CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
 
 ## Add MAC and DF columns
-  ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
-  ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
+ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
+ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
-## Filter on MAF MAC_ALL or DF>=20
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+## Filter on DF>=20
+ CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
+  
+  
+## remove other missings:
 
-## remove invalid values:
   CLEAN --rcdClean EAF<0|EAF>1 --strCleanName numDrop.EAF.invalid
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
@@ -66,6 +65,7 @@ START EASYQC2
   CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
 
 # Filter SNPs on the basis of genotype quality 
+
   CLEAN --rcdClean is.na(INFO_TYPE) --strCleanName numDrop.MissingInformationType 
   CLEAN --rcdClean INFO_TYPE==0&INFO<1 --strCleanName numDrop.Genotyped.LowInformation
   CLEAN --rcdClean (INFO_TYPE!= 0)&(is.na(INFO)) --strCleanName numDrop.Imputed.MissingInformation
@@ -81,10 +81,10 @@ EDITCOL --rcdEditCol gsub('^0+','',CHR) --colEdit CHR
 EDITCOL --rcdEditCol gsub('^0+','',POS) --colEdit POS
 
 ## check and lift to b38 if necessary
-#LIFTOVER --colInChr CHR 
-#		--colInPos POS 
-#		--fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
-#		--blnCheckLift 1
+LIFTOVER --colInChr CHR 
+		--colInPos POS 
+		--fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
+		--blnCheckLift 1
 
 ## create unique cpaid for meta-analysis
 EDITCOL --rcdEditCol toupper(EFFECT_ALLELE) --colEdit EFFECT_ALLELE
@@ -103,26 +103,29 @@ CREATECPAID --colInChr CHR
 ## EAFs and BETAs will be alligned to A1 and EFFECT_ALLELE/NON_EFFECT_ALLELE will be changed accordingly
 
 ## filter duplicate cpaid's / keep the one with higher imp qual
-CLEANDUPLICATES --colInMarker cpaid --strMode criterion --colCrit INFO --strCritDir max
+  CLEANDUPLICATES --colInMarker cpaid --strMode criterion --colCrit INFO --strCritDir max
 
 ## write out CLEANED files for meta-analysis
-WRITE --strPrefix CLEANED --strSuffix cpaid --strMode gz
+  WRITE --strPrefix CLEANED --strSuffix cpaid --strMode gz
 
 ## write descriptive stats to *.rep
 EVALSTAT --colStat N
 
 ## GC lambdas (are just calculated and NOT applied!) to *.rep
-GC --colPval PVAL --blnSuppressCorrection 1
+  GC --colPval PVAL --blnSuppressCorrection 1
 
 
-## QQ and R plots (with GC lambdas)
-QQPLOT --acolQQPlot PVAL
-		--astrColour black
-		--blnAddLambdaGC 1
-		--numPvalOffset 0.05
-		--strPlotName qq.SNP
-		--strMode subplot
+## QQ plots (with GC lambdas)
+  QQPLOT --acolQQPlot PVAL
+  		--astrColour black
+  		--blnAddLambdaGC 1
+  		--numPvalOffset 0.05
+  		--strPlotName qq.SNP
+  		--strMode subplot
 
+
+
+## R plots
 
 RPLOT --rcdRPlotX N_max
 --rcdRPlotY Lambda.PVAL.GC
@@ -134,7 +137,6 @@ RPLOT --rcdRPlotX N_max
 
 ## AF Checks
 
-### Please allign AF ref ancestry to the EASYIN study ancestry
 
 MERGE 	--colInMarker cpaid
 		--fileRef /genetics/TopMed/Charge/1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
@@ -146,16 +148,9 @@ MERGE 	--colInMarker cpaid
 		--blnRefAll 0
 		--blnWriteNotInRef 1
 		
-## List at --fileRef one of the 5 ancestry-specific allele frequency references
-# 1000G_AFR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
-# 1000G_AMR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
-# 1000G_EAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
-# 1000G_EUR_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
-# 1000G_SAS_p3v5.TOPMed_Imputed.Allele_Freq.hg38.txt.gz
 
 
-
-
+## Create AF plot (red: low impuation qualiyt in 1000G-TopMed imputation)
 AFCHECK --colInFreq EAF 
 		--colRefFreq AA1_Freq.ref 
 		--arcdColourCrit R2.ref<0.3;INFO<0.3;INFO<0.3&R2.ref<0.3
@@ -163,10 +158,7 @@ AFCHECK --colInFreq EAF
 		--blnPlotAll 0
 		--numLimOutlier 0.2
 
-
-
 ## Create BAR plot that visualizes outliers (red) and missings (grey; compared to TopMed ref) and fine variants (green)
-
 CALCULATE --rcdCalc length(cpaid) --strCalcName AFCHECK.Checked
 
 RADDCOL --rcdRAddCol AFCHECK.Checked-AFCHECK.numOutlier --colROut AFok
@@ -177,7 +169,9 @@ BRPLOT --acolBRPlot AFok;AFoutlier;NotInRef
 		--numParLas 1 
 		--strPlotName BARPLOT.HighQualVar.AFchecks
 
+PZPLOT --colBeta BETA
+       --colSe SE
+       --colPval PVAL
 
 STOP EASYQC2
-#################################################################################################################
 #################################################################################################################

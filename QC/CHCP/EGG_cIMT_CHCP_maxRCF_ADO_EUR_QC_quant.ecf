@@ -17,8 +17,7 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 		      --colInStrand STRAND
               --acolInFreq EAF
               --colInBeta BETA
-			  --colInA1 EFFECT_ALLELE
-			  --colInA2 NON_EFFECT_ALLELE
+
 
 ### Define here the input files: 
 
