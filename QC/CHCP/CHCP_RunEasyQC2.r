@@ -12,11 +12,11 @@ library(data.table)
 library(R.utils)
 
   m_p="/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/"
-  qc2_p=paste0(m_p, "/Scripts/QC/")
+  qc2_p=paste0(m_p, "/Scripts/QC/CHCP")
   ir_p=paste0(m_p, "/Results/GWAS/CHCP/")
   rw_p=paste0(ir_p, "/Raw/")
   md_p=paste0(ir_p, "/Modified/")
-  o_p=paste0(ir_p, "/Cleaned")
+  o_p=paste0(ir_p, "/QCed")
 
 # Prepare files 
 
@@ -64,9 +64,9 @@ library(R.utils)
 
 
 # Run EasyQC 
-  # ADO  
+  # ADO maxRCF EUR 
     setwd(paste0(o_p, "/ADO/maxRCF/EUR"))
-    EasyQC2(paste0(qc2_p, "/EGG_cIMT_CHCP_maxRCF_ADO_EUR_QC_quant.ecf"))
+    EasyQC2(paste0(qc2_p, "/CHCP_ADO_maxRCF_EUR_QC_quant.ecf"))
      	
   # OAD  EUR
     setwd(paste0(o_p, "/OAD/maxRCF/nonEUR"))

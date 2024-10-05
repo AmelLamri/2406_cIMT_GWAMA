@@ -7,28 +7,25 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/Cleaned/CLD_LCF
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/QCed/ADO/maxLCF
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
 		--strMissing NA
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
               --colRefA2 NON_EFFECT_ALLELE
-		      --colInStrand STRAND
+		          --colInStrand STRAND
               --acolInFreq EAF
               --colInBeta BETA
-			  --colInA1 EFFECT_ALLELE
-			  --colInA2 NON_EFFECT_ALLELE
-
 
 
 ### Define here the input files: 
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/Raw/EGG_cIMT.maxLCF.CLD.MEN.adjBMI.GenR.EUR.MMG.230912.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/Raw/EGG_cIMT.maxLCF.CLD.MEN.noBMI.GenR.EUR.MMG.230912.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/Raw/EGG_cIMT.maxLCF.CLD.MW.adjBMI.GenR.EUR.MMG.230731.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/Raw/EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/Raw/EGG_cIMT.maxLCF.CLD.WOMEN.adjBMI.GenR.EUR.MMG.230912.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR/Batch1/Raw/EGG_cIMT.maxLCF.CLD.WOMEN.noBMI.GenR.EUR.MMG.230912.gz 
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/Raw/EGG_cIMT.maxLCF.CLD.MW.adjBMI.GenR.EUR.MMG.230731.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/Raw/EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/Raw/EGG_cIMT.maxLCF.CLD.MEN.adjBMI.GenR.EUR.MMG.230912.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/Raw/EGG_cIMT.maxLCF.CLD.MEN.noBMI.GenR.EUR.MMG.230912.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/Raw/EGG_cIMT.maxLCF.CLD.WOMEN.adjBMI.GenR.EUR.MMG.230912.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/Raw/EGG_cIMT.maxLCF.CLD.WOMEN.noBMI.GenR.EUR.MMG.230912.gz
 
 
 ## EASYQC Scripting interface:
@@ -39,6 +36,9 @@ CLEAN --rcdClean is.na(CHR) --strCleanName numDrop.CHR.missing
 CLEAN --rcdClean is.na(POS) --strCleanName numDrop.POS.missing
 CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
 CLEAN --rcdClean is.na(N)   --strCleanName numDrop.N.missing
+CLEAN --rcdClean is.na(BETA) --strCleanName numDrop.BETA.missing
+CLEAN --rcdClean is.na(SE) --strCleanName numDrop.SE.missing
+CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
 
 ## remove monomorphics sites: 
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
@@ -48,7 +48,7 @@ ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
 ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
 ## Filter  based on MAC and N 
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
 

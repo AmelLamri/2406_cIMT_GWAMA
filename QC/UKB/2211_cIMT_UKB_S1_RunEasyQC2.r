@@ -13,10 +13,14 @@
         qc2_p=paste0(m_p, "/Scripts/QC/")
         o_p=paste0(m_p, "/Results/GWAS")
 
-    # UKB BRIT 
-    setwd(paste0(o_p, "/UKB/Cleaned/BRIT/maxIMT240_2/"))
-    EasyQC2(paste0(qc2_p, "/UKB/EGG_cIMT_EasyQC2_UKB_BRIT.ecf"))
+    # OAD BRIT 
+    setwd(paste0(o_p, "/UKB/QCed/BRIT/maxIMT240_2/"))
+    EasyQC2(paste0(qc2_p, "/UKB/EGG_cIMT_EasyQC2_UKB_OAD_BRIT_max240_2.ecf"))
+
+    
+    # OAD NBEUR 
+    setwd(paste0(o_p, "/UKB/QCed/OAD/maxIMT240_2/NBEUR"))
+    EasyQC2(paste0(qc2_p, "/UKB/EGG_cIMT_EasyQC2_UKB_OAD_NBEUR_max240_2.ecf"))
 
 
-
-
+    

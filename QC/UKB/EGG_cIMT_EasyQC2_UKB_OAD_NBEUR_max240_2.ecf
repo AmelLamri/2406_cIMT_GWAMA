@@ -7,7 +7,7 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/UKB/Cleaned/BRIT/maxIMT240_2
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/UKB/QCed/OAD/maxIMT240_2/NBEUR
 		--strSeparator TAB
 		--acolIn SNPID;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;BETA;SE;PVAL
 		--acolInClasses character;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric 
@@ -18,19 +18,18 @@ DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GW
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
               --colRefA2 NON_EFFECT_ALLELE
               --colInBeta BETA
-			        --colInA1 EFFECT_ALLELE
-			        --colInA2 NON_EFFECT_ALLELE
+
 # --colInStrand STRAND
 #	--acolInFreq EAF
 
 ### Define here the input files: 
 
-  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/BRIT/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.MW.noBMI.UKB.BRIT.AL.240920_tmp.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/BRIT/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.MW.adjBMI.UKB.BRIT.AL.240920_tmp.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/BRIT/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.M.noBMI.UKB.BRIT.AL.240920_tmp.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/BRIT/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.M.adjBMI.UKB.BRIT.AL.240920_tmp.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/BRIT/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.W.noBMI.UKB.BRIT.AL.240920_tmp.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/BRIT/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.W.adjBMI.UKB.BRIT.AL.240920_tmp.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/NBEUR/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.MW.noBMI.UKB.NBEUR.AL.240927_tmp.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/NBEUR/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.MW.adjBMI.UKB.NBEUR.AL.240927_tmp.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/NBEUR/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.M.noBMI.UKB.NBEUR.AL.240927_tmp.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/NBEUR/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.M.adjBMI.UKB.NBEUR.AL.240927_tmp.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/NBEUR/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.W.noBMI.UKB.NBEUR.AL.240927_tmp.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/UKB/2405_UKB_cIMT_GWAS/Outputs/NBEUR/maxIMT240_2/EGG_cIMT.OAD.maxIMT240_2.W.adjBMI.UKB.NBEUR.AL.240927_tmp.txt.gz
 
 
 ##################################################################################################################################################################
@@ -47,7 +46,7 @@ START EASYQC2
   CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
 
 ## remove monomorphics sites: 
-ADDCOL --rcdAddCol signif((N0+N1)/(N0+N1+N2)) --colOut EAF
+ADDCOL --rcdAddCol signif((N1+N2)/(N0+N1+N2)) --colOut EAF
 CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
 
