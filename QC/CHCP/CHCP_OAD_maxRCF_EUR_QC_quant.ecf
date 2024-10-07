@@ -7,7 +7,7 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Cleaned/OAD/maxRCF/EUR
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/QCed/OAD/maxRCF/EUR
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;HWE_P;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
@@ -16,17 +16,16 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
               --colRefA2 NON_EFFECT_ALLELE
 		      --colInStrand STRAND
               --acolInFreq EAF
-			  --colInA1 EFFECT_ALLELE
-			  --colInA2 NON_EFFECT_ALLELE
+
 
 ### Define here the input files: 
 
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/CP_cIMT.maxRCF.OAD.MEN.adjBMI.EUR.KL.230922.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/CP_cIMT.maxRCF.OAD.MEN.noBMI.EUR.KL.230922.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/CP_cIMT.maxRCF.OAD.MW.adjBMI.EUR.KL.230922.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/CP_cIMT.maxRCF.OAD.MW.noBMI.EUR.KL.230922.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/CP_cIMT.maxRCF.OAD.WOMEN.adjBMI.EUR.KL.230922.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/CP_cIMT.maxRCF.OAD.WOMEN.noBMI.EUR.KL.230922.txt
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.OAD.MEN.adjBMI.EUR.KL.230922_3.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.OAD.MEN.noBMI.EUR.KL.230922_3.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.OAD.MW.adjBMI.EUR.KL.230922_3.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.OAD.MW.noBMI.EUR.KL.230922_3.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.OAD.WOMEN.adjBMI.EUR.KL.230922_3.txt.gz
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.OAD.WOMEN.noBMI.EUR.KL.230922_3.txt.gz
  
 ###			red dots in study QC plots were low info in REF; now also colouring those with low info in STUDY (blue->low info in study; purple->low info in study AND ref)
 
@@ -54,7 +53,7 @@ START EASYQC2
   ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
 ## Filter on MAF MAC_ALL or DF>=20
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
 
@@ -63,13 +62,12 @@ START EASYQC2
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
+  CLEAN --rcdClean abs(BETA)>1000 --strCleanName numDrop.BETA.extreme --blnWriteCleaned 1
 
 # Filter SNPs on the basis of genotype quality 
   CLEAN --rcdClean is.na(INFO_TYPE) --strCleanName numDrop.MissingInformationType 
   CLEAN --rcdClean INFO_TYPE==0&INFO<1 --strCleanName numDrop.Genotyped.LowInformation
   CLEAN --rcdClean (INFO_TYPE!= 0)&(is.na(INFO)) --strCleanName numDrop.Imputed.MissingInformation
-
   CLEAN --rcdClean (INFO_TYPE!=0&INFO<0.3)|(INFO_TYPE==2&INFO<0.4)| (INFO_TYPE==3&INFO<0.8) --strCleanName numDrop.LowInformation
 
 # Filter and count SNPs on sex chromosomes. Keep the sex-chromosomal SNPs in a separate file for optional subsequent analyses. 

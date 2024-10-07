@@ -7,7 +7,7 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Cleaned/ADL/EUR/maxRCF
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/QCed/ADL/maxRCF/EUR
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;HWE_P;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
@@ -20,12 +20,12 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 
 
 ### Define here the input files: 
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/ADL/CP_cIMT.maxRCF.ADL.MW.noBMI.EUR.KL.230922_2.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/ADL/CP_cIMT.maxRCF.ADL.MW.adjBMI.EUR.KL.230922_2.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/ADL/CP_cIMT.maxRCF.ADL.MEN.noBMI.EUR.KL.230922_2.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/ADL/CP_cIMT.maxRCF.ADL.MEN.adjBMI.EUR.KL.230922_2.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/ADL/CP_cIMT.maxRCF.ADL.WOMEN.noBMI.EUR.KL.230922_2.txt.gz
- EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/maxRCF/ADL/CP_cIMT.maxRCF.ADL.WOMEN.adjBMI.EUR.KL.230922_2.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.ADL.MW.noBMI.EUR.KL.230922_3.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.ADL.MW.adjBMI.EUR.KL.230922_3.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.ADL.MEN.noBMI.EUR.KL.230922_3.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.ADL.MEN.adjBMI.EUR.KL.230922_3.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.ADL.WOMEN.noBMI.EUR.KL.230922_3.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/CHCP/Raw/Modified/CP_cIMT.maxRCF.ADL.WOMEN.adjBMI.EUR.KL.230922_3.txt.gz
 
 
 ##################################################################################################################################################################
@@ -51,7 +51,7 @@ ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
 ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
 ## Filter on DF>=20
- CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
   
@@ -62,14 +62,14 @@ ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
+  CLEAN --rcdClean abs(BETA)>1000 --strCleanName numDrop.BETA.extreme --blnWriteCleaned 1
+
 
 # Filter SNPs on the basis of genotype quality 
 
   CLEAN --rcdClean is.na(INFO_TYPE) --strCleanName numDrop.MissingInformationType 
   CLEAN --rcdClean INFO_TYPE==0&INFO<1 --strCleanName numDrop.Genotyped.LowInformation
   CLEAN --rcdClean (INFO_TYPE!= 0)&(is.na(INFO)) --strCleanName numDrop.Imputed.MissingInformation
-
   CLEAN --rcdClean (INFO_TYPE!=0&INFO<0.3)|(INFO_TYPE==2&INFO<0.4)| (INFO_TYPE==3&INFO<0.8) --strCleanName numDrop.LowInformation
 
 # Filter and count SNPs on sex chromosomes. Keep the sex-chromosomal SNPs in a separate file for optional subsequent analyses. 

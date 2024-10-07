@@ -7,7 +7,7 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/FAMILY/Cleaned/OAD/maxLCF
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/FAMILY/QCed/OAD/maxLCF/EUR
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
@@ -22,8 +22,8 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 
 ### Define here the input files: 
 
-  EASYIN --fileIn /genetics/Nutrigen/FAMILY/2301_cIMT_GWAS_PHRI/Outputs/OAD/FAMILY_cIMT.maxLCF.OAD.W.noBMI.EUR.AL.20240825.txt.gz
-  EASYIN --fileIn /genetics/Nutrigen/FAMILY/2301_cIMT_GWAS_PHRI/Outputs/OAD/FAMILY_cIMT.maxLCF.OAD.W.adjBMI.EUR.AL.20240825.txt.gz
+  EASYIN --fileIn /genetics/Nutrigen/FAMILY/2301_FAMILY_cIMT_GWAS_PHRI/Outputs/OAD/FAMILY_cIMT.maxLCF.OAD.W.noBMI.EUR.AL.20240825_2.txt.gz
+  EASYIN --fileIn /genetics/Nutrigen/FAMILY/2301_FAMILY_cIMT_GWAS_PHRI/Outputs/OAD/FAMILY_cIMT.maxLCF.OAD.W.adjBMI.EUR.AL.20240825_2.txt.gz
 
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
@@ -41,7 +41,7 @@ START EASYQC2
 
 
 ## Add EAF columns then clean it 
-ADDCOL --rcdAddCol signif(N0+N1)/(N0+N1+N2)) --colOut EAF
+ADDCOL --rcdAddCol signif((N0+N1)/(N0+N1+N2)) --colOut EAF
 CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
 
 ## remove monomorphics sites: 
@@ -63,7 +63,7 @@ ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
+  CLEAN --rcdClean abs(BETA)>1000 --strCleanName numDrop.BETA.extreme --blnWriteCleaned 1
 
 
 # Filter SNPs on the basis of genotype quality 

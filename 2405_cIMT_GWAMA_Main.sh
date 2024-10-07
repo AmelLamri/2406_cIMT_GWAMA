@@ -132,16 +132,16 @@
       # noBMI 
         cd $o_p/GWAMA/OAD/EUR/maxLCFp/noBMI
 
-        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_MW_noBMI.metal > 241005_maxIMT_OAD_EUR_MW_noBMI_GWAMA1.log
-        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_W_noBMI.metal   > 241005_maxIMT_OAD_EUR_W_noBMI_GWAMA.log
-        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_M_noBMI.metal   > 241005_maxIMT_OAD_EUR_M_noBMI_GWAMA.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_MW_noBMI.metal  > 241005_maxIMT_OAD_EUR_MW_noBMI_GWAMA1.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_W_noBMI.metal   > 241005_maxIMT_OAD_EUR_W_noBMI_GWAMA.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_M_noBMI.metal   > 241005_maxIMT_OAD_EUR_M_noBMI_GWAMA.log
 
       # adjBMI          
         cd $o_p/GWAMA/OAD/EUR/maxLCFp/adjBMI/
 
-        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_MW_adjBMI.metal > 241005_maxIMT_OAD_EUR_MW_adjBMI_GWAMA1.log
-        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_W_adjBMI.metal   > 241005_maxIMT_OAD_EUR_W_adjBMI_GWAMA1.log
-        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMT_OAD_EUR_M_adjBMI.metal   > 241005_maxIMT_OAD_EUR_M_adjBMI_GWAMA1.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_MW_adjBMI.metal  > 241005_maxIMT_OAD_EUR_MW_adjBMI_GWAMA1.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_W_adjBMI.metal   > 241005_maxIMT_OAD_EUR_W_adjBMI_GWAMA1.log
+        $metal $s_p/GWAMA/2211_cIMT_GWAMA_S2_RunMetal_maxIMTp_OAD_EUR_M_adjBMI.metal   > 241005_maxIMT_OAD_EUR_M_adjBMI_GWAMA1.log
 
 
   # ADL

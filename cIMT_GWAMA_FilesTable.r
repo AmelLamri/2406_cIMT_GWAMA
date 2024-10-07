@@ -75,15 +75,12 @@ for (i in 1:nrow(d)){
   #d <- d[-which(d$Study == "FAMILY" & d$AgeGroup %in% c("OAD", "AAD", "ADL") & d$sexGroup %in% c("M")), ] 
 
 
-
-
-
-
-
 # Correct some file names to use the updated version 
     d$File2 <- d$File 
-    d[d$Study == "CHCP", "File2"] <- gsub(".zip", "_2.txt.gz", d[d$Study == "CHCP", "File"])
+    d[d$Study == "CHCP", "File2"] <- gsub(".zip", "_3.txt.gz", d[d$Study == "CHCP", "File"])
     d[d$Study == "GRACE", "File2"] <- gsub("20240903.txt.gz", "20240903_tmp.txt.gz", d[d$Study == "GRACE", "File"])
+    d[d$Study == "FAMILY", "File2"] <- gsub("20240825.txt.gz", "20240825_2.txt.gz", d[d$Study == "FAMILY", "File"])
+
 # Correct Population variables 
 
   #table(d$pop, useNA="ifany") 
@@ -451,7 +448,7 @@ tbg$Gr <- paste(tbg$"AgeGroup", "maxLCFp", tbg$pop2, tbg$sexGroup, tbg$AdjBMI2, 
 tbg$metaA_fn <- paste("maxLCFp",tbg$"AgeGroup",  tbg$pop2, tbg$sexGroup, tbg$AdjBMI2, "_GWAMA_1.TBL", sep="_")
 
 
-write.table(tbg,paste0(o_p,"/241004_GWAMA_Files.tbl"), row.names=F, col.names=T, quote=F, sep="\t")
+write.table(tbg,paste0(o_p,"/241007_GWAMA_Files.tbl"), row.names=F, col.names=T, quote=F, sep="\t")
 
 # SelectionVariables 
 
@@ -483,4 +480,3 @@ if (!dir.exists(gwamap)) dir.create(gwamap, rec=T)
 
 
 
-write.table(fsd, paste0(o_p,"/240926_GWAMA_Files.tbl"), row.names=F, col.names=T, quote=F)

@@ -13,6 +13,7 @@ DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GW
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
 		--strMissing NA
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
+               --colRefA2 NON_EFFECT_ALLELE
 		      --colInStrand STRAND
               --acolInFreq EAF
               --colInBeta BETA
@@ -63,7 +64,6 @@ ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
 
 # Filter SNPs on the basis of genotype quality 
 
