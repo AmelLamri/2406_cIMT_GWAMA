@@ -25,7 +25,7 @@ library(R.utils)
     for (sexi in c("MW","MEN", "WOMEN")){ # "MW", 
       for (adji in c("noBMI", "adjBMI") ){
         for(popi in c("EUR", "nonEUR")){ # , "nonEUR"
-          for (agegri in c("ADO", "ADL", "OAD")){# , "AAD"
+          for (agegri in c("ADO", "ADL", "OAD", "AAD")){# , "AAD"
 
             filei <- paste0("/CP_cIMT.", pheni, ".", agegri,".",sexi,".",adji,".",popi, ".KL.230922")
             if1<- paste0(ir_p,"/Raw/Modified/", filei, ".txt")
@@ -54,13 +54,23 @@ library(R.utils)
               cat (" \n            zipping file \n") 
               gzip(if3, ext="gz", FUN=gzfile)
               if(file.exists(if1))file.remove(if1)
-
             }
           } 
         }
       }
     }
   }
+
+
+tmp<- fread(paste0(if3, ".gz"))
+
+# See who has NA for EAF and why 
+table(is.na(tmp$EAF))
+
+summary(tmp$EAF)
+tmp[is.na(tmp$EAF),c("N", "N0", "N1", "N2")]
+
+
 
 # Run EasyQC 
   # maxRCF 
@@ -78,9 +88,13 @@ library(R.utils)
         EasyQC2(paste0(qc2_p, "/CHCP_ADL_maxRCF_EUR_QC_quant.ecf"))
     
 
-
-
+      # AAD
+        setwd(paste0(o_p, "/AAD/maxRCF/EUR/"))
+        EasyQC2(paste0(qc2_p, "/CHCP_AAD_maxRCF_EUR_QC_quant.ecf"))
     
+
+
+
     # nonEUR
 
       # OAD 
@@ -94,3 +108,11 @@ library(R.utils)
         # ADO
         setwd(paste0(o_p, "/ADO/maxRCF/nonEUR"))
         EasyQC2(paste0(qc2_p, "/CHCP_ADO_maxRCF_nonEUR_QC_quant.ecf"))
+
+        
+      # ADL
+        setwd(paste0(o_p, "/AAD/maxRCF/nonEUR/"))
+        EasyQC2(paste0(qc2_p, "/CHCP_AAD_maxRCF_nonEUR_QC_quant.ecf"))
+    
+#HERE< some variants have an EAF of NA because N0==0, N1==0, N2==0, these are found in MW and in MEN samples, they will be repoved during EASYQC
+

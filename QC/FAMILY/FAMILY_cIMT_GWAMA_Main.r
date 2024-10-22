@@ -13,7 +13,7 @@
   m0_p="/genetics/Nutrigen/FAMILY/2301_FAMILY_cIMT_GWAS_PHRI"
   ir_p <- paste0(m0_p, "/Outputs")
   qc2_p=paste0(m_p, "/Scripts/QC/FAMILY")
-  o_p=paste0(m_p, "/Results/GWAS")
+  o_p=paste0(m_p, "/Results/GWAS/FAMILY")
 
 
 
@@ -25,7 +25,6 @@
       for (adji in c("noBMI", "adjBMI") ){
         for(popi in c("EUR")){ # , "nonEUR"
           for (agegri in c("ADO", "ADL", "OAD", "AAD")){# , "AAD"
-
             if(agegri != "ADO" & sexi!= "W") next()
             filei <- paste0("/FAMILY_cIMT.", pheni, ".", agegri,".",sexi,".",adji,".",popi, ".AL.20240825")
             if1<- paste0(ir_p,"/", agegri, "/", filei, ".txt")
@@ -55,30 +54,22 @@
   }
 
 
-  #ADO 
-  setwd(paste0(o_p, "/FAMILY/Cleaned/ADO/maxLCF/"))
+
+
+
+   #ADO 
+  setwd(paste0(o_p, "/QCed/ADO/maxLCF/EUR"))
   EasyQC2(paste0(qc2_p, "/EGG_cIMT_maxLCF_ADO_FAMILY_QC_quant.ecf"))
 
   #ADL 
-  setwd(paste0(o_p, "/FAMILY/Cleaned/ADL/maxLCF/"))
+  setwd(paste0(o_p, "/QCed/ADL/maxLCF/EUR/"))
   EasyQC2(paste0(qc2_p, "/EGG_cIMT_maxLCF_ADL_FAMILY_QC_quant.ecf"))
-  cp 
+
   #OAD
-  setwd(paste0(o_p, "/FAMILY/Cleaned/OAD/maxLCF/"))
+  setwd(paste0(o_p, "/QCed/OAD/maxLCF/EUR"))
   EasyQC2(paste0(qc2_p, "/EGG_cIMT_maxLCF_OAD_FAMILY_QC_quant.ecf"))
   
   #AAD 
-  setwd(paste0(o_p, "/FAMILY/Cleaned/AAD/maxLCF/"))
+  setwd(paste0(o_p, "/QCed/AAD/maxLCF/EUR"))
   EasyQC2(paste0(qc2_p, "/EGG_cIMT_maxLCF_AAD_FAMILY_QC_quant.ecf"))
 
-
-
-
-# Copy adult cleaned women files to MW 
-
-  file.copy(paste0(o_p, "/ADL/FAMILY_cIMT.maxLCF.ADL.W.noBMI.EUR.AL.20240825_2.txt.gz" ), paste0(o_p, "/ADL/FAMILY_cIMT.maxLCF.ADL.MW.noBMI.EUR.AL.20240825_2.txt.gz" ))
-  file.copy(paste0(o_p, "/ADL/FAMILY_cIMT.maxLCF.ADL.W.adjBMI.EUR.AL.20240825_2.txt.gz"), paste0(o_p, "/ADL/FAMILY_cIMT.maxLCF.ADL.MW.adjBMI.EUR.AL.20240825_2.txt.gz"))
-  file.copy(paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.W.noBMI.EUR.AL.20240825_2.txt.gz" ), paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.MW.noBMI.EUR.AL.20240825_2.txt.gz") )
-  file.copy(paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.W.adjBMI.EUR.AL.20240825_2.txt.gz"), paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.MW.adjBMI.EUR.AL.20240825_2.txt.gz"))
-  file.copy(paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.W.noBMI.EUR.AL.20240825_2.txt.gz" ), paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.MW.noBMI.EUR.AL.20240825_2.txt.gz") )
-  file.copy(paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.W.adjBMI.EUR.AL.20240825_2.txt.gz"), paste0(o_p, "/OAD/FAMILY_cIMT.maxLCF.OAD.MW.adjBMI.EUR.AL.20240825_2.txt.gz"))

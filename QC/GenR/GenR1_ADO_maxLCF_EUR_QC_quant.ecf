@@ -7,7 +7,11 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/QCed/ADO/maxLCF
+# specificities of the code to GenR : there is no info_type column, genotyped SNPs have an INFO==1
+
+
+
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
@@ -60,16 +64,11 @@ ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
-
 
 # Filter SNPs on the basis of genotype quality 
 
-  CLEAN --rcdClean is.na(INFO_TYPE) --strCleanName numDrop.MissingInformationType 
-  CLEAN --rcdClean INFO_TYPE==0&INFO<1 --strCleanName numDrop.Genotyped.LowInformation
-  CLEAN --rcdClean (INFO_TYPE!= 0)&(is.na(INFO)) --strCleanName numDrop.Imputed.MissingInformation
-
-  CLEAN --rcdClean (INFO_TYPE!=0&INFO<0.3)|(INFO_TYPE==2&INFO<0.4)| (INFO_TYPE==3&INFO<0.8) --strCleanName numDrop.LowInformation
+  CLEAN --rcdClean (is.na(INFO)) --strCleanName numDrop.Imputed.MissingInformation
+  CLEAN --rcdClean (INFO<0.3) --strCleanName numDrop.LowInformation
 
 # Filter and count SNPs on sex chromosomes. Keep the sex-chromosomal SNPs in a separate file for optional subsequent analyses. 
   CLEAN --rcdClean !CHR%in%c(1:22,NA) --strCleanName numDropSNP_ChrXY --blnWriteCleaned 1

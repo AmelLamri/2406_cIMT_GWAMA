@@ -13,6 +13,6 @@
   qc2_p=paste0(m_p, "/Scripts/QC/NFBC")
   o_p=paste0(m_p, "/Results/GWAS")
 
-  setwd(paste0(o_p, "/NFBC1966/Cleaned/maxLCF/"))
+  setwd(paste0(o_p, "/NFBC/QCed//OAD/maxLCF/EUR"))
   EasyQC2(paste0(qc2_p, "/EGG_cIMT_NFBC1966_OAD_maxLCF_QC_quant.ecf"))
 

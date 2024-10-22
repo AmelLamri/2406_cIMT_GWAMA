@@ -1,0 +1,161 @@
+##################################################################################################################################################################
+##### EasyQC-script to check cleaned CHARGE phase 2 GLI-GWAS results prior to meta-analysis
+##### EasyQC2 version: 1.1.1
+##### Programmer: Thomas Winkler, 23-12-14
+##### Contact: thomas.winkler@ukr.de
+##### 230421: added QQPLOT
+##### 231214: replaced CALCULATE by RADDCOL at step 5
+##################################################################################################################################################################
+
+### Define here 
+###  --pathOut: the path to the output folder
+###  --acolIn/acolInClasses: the columns to be read
+
+DEFINE	--pathOut /path/to/results
+			--acolIn cpaid;EAF_ALL;N;BETA_SNP_M2;SE_SNP_M2;P_SNP_M2;BETA_SNP_M1;SE_SNP_M1_MB;P_SNP_M1_MB;SE_SNP_M1_ROBUST;P_SNP_M1_ROBUST;BETA_INT;SE_INT_MB;P_INT_MB;SE_INT_ROBUST;P_INT_ROBUST;P_JOINT_MB;COV_SNP_INT_MB;P_JOINT_ROBUST;COV_SNP_INT_ROBUST
+			--acolInClasses character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
+			--strMissing .
+			--strSeparator TAB
+
+### Define here the input files: 
+EASYIN --fileIn /path/to/cleaned/files/CLEANED.Phase2.ARIC.EA.LDL.LTST.COMBINED.20211104.cpaid.txt.gz
+EASYIN --fileIn /path/to/cleaned/files/CLEANED.Phase2.CHS.EA.HDL.STST.FEMALE.20211104.cpaid.txt.gz
+EASYIN --fileIn /path/to/cleaned/files/CLEANED.Phase2.MESA.EA.HDL.STST.FEMALE.20211104.cpaid.txt.gz
+### ... 
+### Suggest: RUN this script PER TRAIT/EXPOSURE/ANCESTRY combination as you would run files in an ancestry-specific meta-analysis
+### -> Have one EasyQC2 premeta script/run per metal script/run
+
+##################################################################################################################################################################
+##################################################################################################################################################################
+## EASYQC Scripting interface:
+START EASYQC2
+
+### 1. remove all rare avriants
+CLEAN --rcdClean EAF_ALL<0.01|EAF_ALL>0.99 --strCleanName numDrop.EAF_ALL.rare
+
+## 2. Descriptive stats 
+EVALSTAT --colStat N
+
+EVALSTAT --colStat BETA_SNP_M2
+EVALSTAT --colStat SE_SNP_M2
+
+EVALSTAT --colStat BETA_SNP_M1
+EVALSTAT --colStat SE_SNP_M1_MB
+EVALSTAT --colStat SE_SNP_M1_ROBUST
+
+EVALSTAT --colStat BETA_INT
+EVALSTAT --colStat SE_INT_MB
+EVALSTAT --colStat SE_INT_ROBUST
+
+EVALSTAT --colStat COV_SNP_INT_MB
+EVALSTAT --colStat COV_SNP_INT_ROBUST
+
+## 3. GC lambdas (are just calculated and NOT applied!) to *.rep
+GC --colPval P_SNP_M2 --blnSuppressCorrection 1
+GC --colPval P_SNP_M1_MB --blnSuppressCorrection 1
+GC --colPval P_SNP_M1_ROBUST --blnSuppressCorrection 1
+GC --colPval P_INT_MB --blnSuppressCorrection 1
+GC --colPval P_INT_ROBUST --blnSuppressCorrection 1
+GC --colPval P_JOINT_MB --blnSuppressCorrection 1
+GC --colPval P_JOINT_ROBUST --blnSuppressCorrection 1
+
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY Lambda.P_SNP_M2.GC
+		--arcdAdd2Plot abline(1,0,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName GCN_PLOT.P_SNP_M2
+
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY Lambda.P_SNP_M1_MB.GC
+		--arcdAdd2Plot abline(1,0,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName GCN_PLOT.P_SNP_M1_MB
+
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY Lambda.P_SNP_M1_ROBUST.GC
+		--arcdAdd2Plot abline(1,0,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName GCN_PLOT.P_SNP_M1_ROBUST
+		
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY Lambda.P_INT_MB.GC
+		--arcdAdd2Plot abline(1,0,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName GCN_PLOT.P_INT_MB
+
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY Lambda.P_INT_ROBUST.GC
+		--arcdAdd2Plot abline(1,0,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName GCN_PLOT.P_INT_ROBUST
+		
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY Lambda.P_JOINT_MB.GC
+		--arcdAdd2Plot abline(1,0,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName GCN_PLOT.P_JOINT_MB
+		
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY Lambda.P_JOINT_ROBUST.GC
+		--arcdAdd2Plot abline(1,0,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName GCN_PLOT.P_JOINT_ROBUST
+
+## 4. trait transformation based on M2
+
+CALCULATE --rcdCalc median(SE_SNP_M2) --strCalcName SE_SNP_M2_median
+CALCULATE --rcdCalc median(1/sqrt(2*EAF_ALL*(1-EAF_ALL))) --strCalcName c_trans_ALL
+
+RPLOT 	--rcdRPlotX sqrt(N_max)
+		--rcdRPlotY c_trans_ALL/SE_SNP_M2_median
+		--arcdAdd2Plot abline(0,1,col='orange')
+		--strAxes lim(0,NULL,0,NULL)
+		--strPlotName SEN_PLOT
+## -> studies are supposed to line up so that there are no outliers
+
+		
+## 5. check for E-centering
+
+# CALCULATE --rcdCalc COV_SNP_INT_MB_median*N_max --strCalcName COV_times_N
+RADDCOL --rcdRAddCol COV_SNP_INT_MB_median*N_max --colROut COV_times_N
+
+RPLOT 	--rcdRPlotX N_max
+		--rcdRPlotY COV_times_N
+		--strXlab Study_maxN
+		--strYlab Study_medianCOV_times_maxN
+		--strAxes lim(0,NULL,NULL,NULL)
+		--strPlotName COVN_PLOT
+## -> outlying studies towards y=0 may be problematic! 
+
+## 6. QQ plots (with GC lambdas)
+QQPLOT --acolQQPlot P_SNP_M2
+		--astrColour black
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.SNP_M2
+		--strMode subplot
+
+QQPLOT --acolQQPlot P_SNP_M1_MB;P_SNP_M1_ROBUST
+		--astrColour black;red
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.SNP_M1_MB_ROBUST
+		--strMode subplot
+
+QQPLOT --acolQQPlot P_INT_MB;P_INT_ROBUST
+		--astrColour black;red
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.INT_MB_ROBUST		
+		--strMode subplot
+
+QQPLOT --acolQQPlot P_JOINT_MB;P_JOINT_ROBUST
+		--astrColour black;red
+		--blnAddLambdaGC 1
+		--numPvalOffset 0.05
+		--strPlotName qq.JOINT_MB_ROBUST	
+		--strMode subplot
+		
+STOP EASYQC2
+#################################################################################################################
+#################################################################################################################

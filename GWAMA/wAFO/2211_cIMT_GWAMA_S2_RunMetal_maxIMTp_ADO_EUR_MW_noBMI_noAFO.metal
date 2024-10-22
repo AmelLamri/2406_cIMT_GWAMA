@@ -17,15 +17,15 @@ VERBOSE OFF
 GENOMICCONTROL ON
 
 
+
 PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/ABCD/QCed/ADO/maxCCA/EUR/CLEANED.EGG_cIMT.maxCCA.ADO.MW.noBMI.EUR.EM.20230626.cpaid_noDup_noAFO.tbl.gz
-PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/CHCP/QCed/ADO/maxRCF/EUR/CLEANED.CP_cIMT.maxRCF.ADO.MW.noBMI.EUR.KL.230922_2.cpaid_noDup_noAFO.tbl.gz
-PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/FAMILY/QCed/ADO/maxLCF/EUR/CLEANED.FAMILY_cIMT.maxLCF.ADO.MW.noBMI.EUR.AL.20240825.cpaid_noDup_noAFO.tbl.gz
+PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/CHCP/QCed/ADO/maxRCF/EUR/CLEANED.CP_cIMT.maxRCF.ADO.MW.noBMI.EUR.KL.230922_3.cpaid_noDup_noAFO.tbl.gz
+PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/FAMILY/QCed/ADO/maxLCF/EUR/CLEANED.FAMILY_cIMT.maxLCF.ADO.MW.noBMI.EUR.AL.20240825_2.cpaid_noDup_noAFO.tbl.gz
 PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid_noDup_noAFO.tbl.gz
 PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR2/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid_noDup_noAFO.tbl.gz
 PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/PANIC/QCed/ADO/meanLCF/EUR/CLEANED.PANIC_cIMT.meanLCF.ADO.MW.noBMI.EUR.TS.231218.cpaid_noDup_noAFO.tbl.gz
 PROCESS /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/SWS/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.EUR.PT.240130.cpaid_noDup_noAFO.tbl.gz
 
-
-OUTFILE /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAMA/ADO/EUR/maxLCFp/noBMI/240926_maxIMT_ADO_EUR_MW_noBMI_GWAMA_noAFO .TBL
+OUTFILE /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAMA/ADO/EUR/maxLCFp/noBMI/241015_maxLCFp_ADO_EUR_MW_noBMI_GWAMA_noAFO .TBL
 
 ANALYZE HETEROGENEITY

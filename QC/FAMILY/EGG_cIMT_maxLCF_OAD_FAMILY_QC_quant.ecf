@@ -25,6 +25,8 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
   EASYIN --fileIn /genetics/Nutrigen/FAMILY/2301_FAMILY_cIMT_GWAS_PHRI/Outputs/OAD/FAMILY_cIMT.maxLCF.OAD.W.noBMI.EUR.AL.20240825_2.txt.gz
   EASYIN --fileIn /genetics/Nutrigen/FAMILY/2301_FAMILY_cIMT_GWAS_PHRI/Outputs/OAD/FAMILY_cIMT.maxLCF.OAD.W.adjBMI.EUR.AL.20240825_2.txt.gz
 
+
+
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
 
@@ -40,10 +42,6 @@ START EASYQC2
   CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
 
 
-## Add EAF columns then clean it 
-ADDCOL --rcdAddCol signif((N0+N1)/(N0+N1+N2)) --colOut EAF
-CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
-
 ## remove monomorphics sites: 
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
 
@@ -52,7 +50,7 @@ ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
 ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
 ## Filter on DF>=20
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
 

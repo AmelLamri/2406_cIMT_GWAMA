@@ -5,29 +5,26 @@
 ##### Contact: thomas.winkler@ukr.de
 ##################################################################################################################################################################
 
+#replace NA in info col for genotyped SNPs to 1  EDITCOL --rcdEditCol ifelse(NA,1,INFO) --colEdit INFO
 
-
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/SWS/Cleaned/maxLCF
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/QCed/YAD/maxLCF/EUR
 		--strSeparator TAB
-		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
-		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
+		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;BETA;SE;PVAL;INFO_TYPE;INFO
+		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
 		--strMissing NA
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
               --colRefA2 NON_EFFECT_ALLELE
-		          --colInStrand STRAND
-              --acolInFreq EAF
-              --colInBeta BETA
-			        --colInA1 EFFECT_ALLELE
-			        --colInA2 NON_EFFECT_ALLELE
+		      --colInStrand STRAND
+          --acolInFreq EAF
+          --colInBeta BETA
+			    --colInA1 EFFECT_ALLELE
+			    --colInA2 NON_EFFECT_ALLELE
 
 ### Define here the input files: 
 
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/SWS/Raw/EGG_cIMT.maxLCF.CLD.MEN.adjBMI.EUR.PT.240130.txt.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/SWS/Raw/EGG_cIMT.maxLCF.CLD.MEN.noBMI.EUR.PT.240130.txt.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/SWS/Raw/EGG_cIMT.maxLCF.CLD.MW.adjBMI.EUR.PT.240130.txt.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/SWS/Raw/EGG_cIMT.maxLCF.CLD.MW.noBMI.EUR.PT.240130.txt.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/SWS/Raw/EGG_cIMT.maxLCF.CLD.WOMEN.adjBMI.EUR.PT.240130.txt.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/SWS/Raw/EGG_cIMT.maxLCF.CLD.WOMEN.noBMI.EUR.PT.240130.txt.gz
+
+  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.W.adjBMI.EUR.AL.20240702_2.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.W.noBMI.EUR.AL.20240702_2.txt.gz
 
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
@@ -43,31 +40,33 @@ START EASYQC2
   CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
   CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
 
-
-## Add EAF columns then clean it 
-#ADDCOL --rcdAddCol signif((N0+N1)/(N0+N1+N2)) --colOut EAF
-#CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
-
 ## remove monomorphics sites: 
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
+
+#replace NA in INFO col for genotyped SNPs to 1 
+ EDITCOL --rcdEditCol ifelse(NA,1,INFO) --colEdit INFO
 
 ## Add MAC and DF columns
 ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
 ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
-## Filter on DF>=20
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+
+
+
+
+## Filter  based on MAC and N 
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
 
 
-## remove other missings:
+##  remove invalid values:
+
 
   CLEAN --rcdClean EAF<0|EAF>1 --strCleanName numDrop.EAF.invalid
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
 
 
 # Filter SNPs on the basis of genotype quality 

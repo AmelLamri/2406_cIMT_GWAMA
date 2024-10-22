@@ -14,7 +14,7 @@
         o_p=paste0(m_p, "/Results/GWAS")
 
     # OAD BRIT 
-    setwd(paste0(o_p, "/UKB/QCed/BRIT/maxIMT240_2/"))
+    setwd(paste0(o_p, "/UKB/QCed/OAD/maxIMT240_2/BRIT"))
     EasyQC2(paste0(qc2_p, "/UKB/EGG_cIMT_EasyQC2_UKB_OAD_BRIT_max240_2.ecf"))
 
     

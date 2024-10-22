@@ -79,10 +79,10 @@ EDITCOL --rcdEditCol gsub('^0+','',CHR) --colEdit CHR
 EDITCOL --rcdEditCol gsub('^0+','',POS) --colEdit POS
 
 ## check and lift to b38 if necessary
-#LIFTOVER --colInChr CHR 
-#		--colInPos POS 
-#		--fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
-#		--blnCheckLift 1
+LIFTOVER --colInChr CHR 
+		--colInPos POS 
+		--fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
+		--blnCheckLift 1
 
 ## create unique cpaid for meta-analysis
 EDITCOL --rcdEditCol toupper(EFFECT_ALLELE) --colEdit EFFECT_ALLELE

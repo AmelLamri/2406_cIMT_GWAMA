@@ -18,37 +18,35 @@ library(R.utils)
   o1_p=paste0(ir1_p, "/QCed/")
   o2_p=paste0(ir2_p, "/QCed/")
 
+  #r2n <- read.table(gzfile("/storage/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw/received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.MEN.adjBMI.GenR4.EUR.IFM.231024.MetaScore.assoc.gz"), head=T, string=F)
+
+  #r2o <- read.table(gzfile("/storage/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw/EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.gz"), head=T, string=F)
+  #r1o <- read.table(gzfile("/storage/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR1/Raw/EGG_cIMT.maxRCF.CLD.MW.adjBMI.GenR.EUR.MMG.230731.gz"), head=T, string=F)
+
  # Run EasyQC 
   #  GenR1 ADO maxLCF EUR 
     setwd(paste0(o1_p, "/ADO/maxLCF/EUR"))
     EasyQC2(paste0(qc2_p, "/GenR1_ADO_maxLCF_EUR_QC_quant.ecf"))
 
-
-    
   #  GenR2 ADO maxLCF EUR 
     setwd(paste0(o2_p, "/ADO/maxLCF/EUR"))
     EasyQC2(paste0(qc2_p, "/GenR2_ADO_maxLCF_EUR_QC_quant.ecf"))
-    
-# data has embeded nulls , need to remove thm before GWAS
 
+   
+# data has embeded nulls , need to remove them before GWAMA
 
-R 
-library( "R.utils")
-fs <- c( "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR2/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid.gz", "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR2/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.adjBMI.GenR.EUR.MMG.231005.cpaid.gz", "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.adjBMI.GenR.EUR.MMG.230731.cpaid.gz","/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid.gz") 
+#fs <- c( "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR2/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.cpaid.gz", "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR2/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.adjBMI.GenR.EUR.MMG.231005.cpaid.gz", "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.adjBMI.GenR.EUR.MMG.230731.cpaid.gz","/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid.gz") 
 
 ## Processing file 
-fs <- '/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid.gz'
+#fs <- '/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI//Results/GWAS/GenR1/QCed/ADO/maxLCF/EUR/CLEANED.EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.230912.cpaid.gz'
 
 
-for (i in 1:length(fs)){
-
-  d <- read.table(gzfile(fs[i]), head=T, string=F)
-  file.rename(fs[i], gsub(".cpaid", "_v1.cpaid", fs[i]))
-  write.table(d, fs[i], row.names=F, quote=F, col.names=T, sep="\t")
-  file.rename(fs[i], gsub(".gz", "", fs[i]))
-  gzip(gsub(".gz", "", fs[i]))
-}
-
-
-    
-    
+# for (i in 1:length(fs)){
+# 
+#   d <- read.table(gzfile(fs[i]), head=T, string=F)
+#   file.rename(fs[i], gsub(".cpaid", "_v1.cpaid", fs[i]))
+#   write.table(d, fs[i], row.names=F, quote=F, col.names=T, sep="\t")
+#   file.rename(fs[i], gsub(".gz", "", fs[i]))
+#   gzip(gsub(".gz", "", fs[i]))
+# }
+# 

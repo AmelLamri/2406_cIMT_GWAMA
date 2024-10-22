@@ -7,48 +7,41 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Cleaned/OAD_LCF
-			--acolIn CHR;POS;INFO;EFFECT_ALLELE;NON_EFFECT_ALLELE;EAF;N;BETA;SE;PVAL
-			--acolInClasses character;integer;numeric;character;character;numeric;numeric;numeric;numeric;numeric
-			--strMissing .
-			--strSeparator TAB
-		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
-		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
-# 		--strMissing NA
-
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/QCed/ADL/maxLCF/EUR
+		--strSeparator TAB
+		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;HWE_P;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
+		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
+		--strMissing NA
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
-              --colRefA2 NON_EFFECT_ALLELE
 		      --colInStrand STRAND
               --acolInFreq EAF
               --colInBeta BETA
-			  --colInA1 EFFECT_ALLELE
-			  --colInA2 NON_EFFECT_ALLELE
-### Define here the input files: 
+			  --colRefA2 NON_EFFECT_ALLELE
 
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxRCF.OAD.MEN.adjBMI.NFBC1966.EUR.JR.230807.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxRCF.OAD.MEN.noBMI.NFBC1966.EUR.JR.230801.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxRCF.OAD.MW.adjBMI.NFBC1966.EUR.JR.230807.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxRCF.OAD.MW.noBMI.NFBC1966.EUR.JR.230801.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxRCF.OAD.WOMEN.adjBMI.NFBC1966.EUR.JR.230807.txt.gz
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxRCF.OAD.WOMEN.noBMI.NFBC1966.EUR.JR.230801.txt.gz
+
+### Define here the input files: 
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.ADL.MW.adjBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.ADL.MW.noBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.ADL.MEN.adjBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.ADL.MEN.noBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.ADL.WOMEN.adjBMI.YFS.EUR.LPL.231001.txt.gz
+ EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.ADL.WOMEN.noBMI.YFS.EUR.LPL.231001.txt.gz
 
 
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
-
 START EASYQC2
 
 ## remove missing values:
   CLEAN --rcdClean is.na(CHR) --strCleanName numDrop.CHR.missing
   CLEAN --rcdClean is.na(POS) --strCleanName numDrop.POS.missing
+  CLEAN --rcdClean is.na(INFO) --strCleanName numDrop.INFO.missing
+
   CLEAN --rcdClean is.na(N) --strCleanName numDrop.N.missing
   CLEAN --rcdClean is.na(BETA) --strCleanName numDrop.BETA.missing
   CLEAN --rcdClean is.na(SE) --strCleanName numDrop.SE.missing
   CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
-
-## Add EAF columns then clean it 
-ADDCOL --rcdAddCol signif(N0+N1)/(N0+N1+N2)) --colOut EAF
-CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
+  CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
 
 ## remove monomorphics sites: 
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
@@ -58,19 +51,17 @@ ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
 ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
 ## Filter on DF>=20
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
-
-
+  
+  
 ## remove other missings:
 
   CLEAN --rcdClean EAF<0|EAF>1 --strCleanName numDrop.EAF.invalid
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
-
 
 # Filter SNPs on the basis of genotype quality 
 
@@ -84,32 +75,31 @@ ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
   CLEAN --rcdClean !CHR%in%c(1:22,NA) --strCleanName numDropSNP_ChrXY --blnWriteCleaned 1
 
 
-
 ## remove leading 0's: 
-  EDITCOL --rcdEditCol gsub('^0+','',CHR) --colEdit CHR
-  EDITCOL --rcdEditCol gsub('^0+','',POS) --colEdit POS
+EDITCOL --rcdEditCol gsub('^0+','',CHR) --colEdit CHR
+EDITCOL --rcdEditCol gsub('^0+','',POS) --colEdit POS
 
 ## check and lift to b38 if necessary
-  LIFTOVER --colInChr CHR 
+LIFTOVER --colInChr CHR 
 		--colInPos POS 
 		--fileLiftOver /genetics/UKB/Charge/1000G_p3v5.TOPMed_Imputed.add_UKB.Liftover_hg19to38.txt.gz
 		--blnCheckLift 1
 
 ## create unique cpaid for meta-analysis
-  EDITCOL --rcdEditCol toupper(EFFECT_ALLELE) --colEdit EFFECT_ALLELE
-  EDITCOL --rcdEditCol toupper(NON_EFFECT_ALLELE) --colEdit NON_EFFECT_ALLELE
-  
-  CREATECPAID --colInChr CHR 
-  			--colInPos POS 
-  			--colInEA EFFECT_ALLELE 
-  			--colInOA NON_EFFECT_ALLELE 
-  			--acolInFreq EAF
-  			--acolInBeta BETA
+EDITCOL --rcdEditCol toupper(EFFECT_ALLELE) --colEdit EFFECT_ALLELE
+EDITCOL --rcdEditCol toupper(NON_EFFECT_ALLELE) --colEdit NON_EFFECT_ALLELE
+
+CREATECPAID --colInChr CHR 
+			--colInPos POS 
+			--colInEA EFFECT_ALLELE 
+			--colInOA NON_EFFECT_ALLELE 
+			--acolInFreq EAF
+			--acolInBeta BETA
 			
-  ## cpaid is always CHR:POS:A1_A2 with A1 and A2 in alphabetical order! 
-  ## Reason for alphabetical is that order of ref/alt may be switched between studies 
-  ## cpaids will be meta-analysed correctly by metal (metal will adjust effects according to ref/alt)
-  ## EAFs and BETAs will be alligned to A1 and EFFECT_ALLELE/NON_EFFECT_ALLELE will be changed accordingly
+## cpaid is always CHR:POS:A1_A2 with A1 and A2 in alphabetical order! 
+## Reason for alphabetical is that order of ref/alt may be switched between studies 
+## cpaids will be meta-analysed correctly by metal (metal will adjust effects according to ref/alt)
+## EAFs and BETAs will be alligned to A1 and EFFECT_ALLELE/NON_EFFECT_ALLELE will be changed accordingly
 
 ## filter duplicate cpaid's / keep the one with higher imp qual
   CLEANDUPLICATES --colInMarker cpaid --strMode criterion --colCrit INFO --strCritDir max

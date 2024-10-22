@@ -7,10 +7,10 @@
 
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Cleaned/AAD/maxLCF
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/QCed/AAD/maxLCF/EUR
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;EAF;BETA;SE;PVAL;INFO_TYPE;INFO
-		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
+		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric
 		--strMissing NA
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
               --colRefA2 NON_EFFECT_ALLELE
@@ -22,8 +22,8 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 
 ### Define here the input files: 
 
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/AAD/ALSPAC_cIMT.maxIMT.AAD.W.adjBMI.EUR.AL.20240702.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/AAD/ALSPAC_cIMT.maxIMT.AAD.W.noBMI.EUR.AL.20240702.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/AAD/ALSPAC_cIMT.maxLCF.AAD.W.adjBMI.EUR.AL.20240702_2.txt.gz
+  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/AAD/ALSPAC_cIMT.maxLCF.AAD.W.noBMI.EUR.AL.20240702_2.txt.gz
 
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
@@ -42,12 +42,16 @@ START EASYQC2
 ## remove monomorphics sites: 
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
 
+#replace NA in INFO col for genotyped SNPs to 1 
+ EDITCOL --rcdEditCol ifelse(NA,1,INFO) --colEdit INFO
+
+
 ## Add MAC and DF columns
 ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
 ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
 ## Filter  based on MAC and N 
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
 
@@ -59,7 +63,6 @@ ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
 
 
 # Filter SNPs on the basis of genotype quality 

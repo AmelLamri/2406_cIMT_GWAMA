@@ -11,14 +11,16 @@
     library(data.table)
   m_p="/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/"
 
-  qc2_p=paste0(m_p, "/Scripts/QC/")
-  o_p=paste0(m_p, "/Results/GWAS")
+  qc2_p=paste0(m_p, "/Scripts/QC/YFS")
+  o_p=paste0(m_p, "/Results/GWAS/YFS/QCed")
 
     # YFS YAD maxLCF  
-    setwd(paste0(o_p, "/YFS/Cleaned/YAD/maxLCF"))
-    EasyQC2(paste0(qc2_p, "/YFS/2211_cIMT_YFS_YAD_maxLCF_S2_RunEasy.ecf"))
+    setwd(paste0(o_p, "/YAD/maxLCF/EUR"))
+    EasyQC2(paste0(qc2_p, "/YFS_YAD_maxLCF_EUR_quant.ecf"))
      
     # YFS YAD maxLCF  
-    setwd(paste0(o_p, "/YFS/Cleaned/ADL/maxLCF"))
-    EasyQC2(paste0(qc2_p, "/YFS/2211_cIMT_YFS_ADL_maxLCF_S2_RunEasy.ecf"))
+    setwd(paste0(o_p, "/ADL/maxLCF/EUR"))
+    EasyQC2(paste0(qc2_p, "/YFS_ADL_maxLCF_EUR_quant.ecf"))
      
+  
+# d<-fread("/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/YFS/Raw/EGG_cIMT.maxLCF.YAD.MW.adjBMI.YFS.EUR.LPL.231001.txt.gz")

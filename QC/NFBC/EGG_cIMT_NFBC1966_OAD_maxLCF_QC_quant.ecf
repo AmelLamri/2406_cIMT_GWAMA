@@ -6,7 +6,7 @@
 ##################################################################################################################################################################
 
 
-DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Cleaned/maxLCF
+DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC/QCed/OAD/maxLCF/EUR
 		--strSeparator TAB
 		--acolIn SNPID;STRAND;BUILD;CHR;POS;EFFECT_ALLELE;NON_EFFECT_ALLELE;N;N0;N1;N2;HWE_P;CALL_RATE;BETA;SE;PVAL;INFO_TYPE;INFO
 		--acolInClasses character;character;numeric;character;numeric;character;character;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;numeric;character;numeric
@@ -20,12 +20,12 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 			  --colInA2 NON_EFFECT_ALLELE
 ### Define here the input files: 
 
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxLCF.OAD.MW.adjBMI.NFBC1966.EUR.JR.230807.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxLCF.OAD.MW.noBMI.NFBC1966.EUR.JR.230801.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxLCF.OAD.MEN.adjBMI.NFBC1966.EUR.JR.230807.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxLCF.OAD.MEN.noBMI.NFBC1966.EUR.JR.230801.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxLCF.OAD.WOMEN.adjBMI.NFBC1966.EUR.JR.230807.txt
-EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC1966/Raw/EGG_cIMT.maxLCF.OAD.WOMEN.noBMI.NFBC1966.EUR.JR.230801.txt
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC/Raw/EGG_cIMT.maxLCF.OAD.MW.adjBMI.NFBC1966.EUR.JR.230807.txt
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC/Raw/EGG_cIMT.maxLCF.OAD.MW.noBMI.NFBC1966.EUR.JR.230801.txt
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC/Raw/EGG_cIMT.maxLCF.OAD.MEN.adjBMI.NFBC1966.EUR.JR.230807.txt
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC/Raw/EGG_cIMT.maxLCF.OAD.MEN.noBMI.NFBC1966.EUR.JR.230801.txt
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC/Raw/EGG_cIMT.maxLCF.OAD.WOMEN.adjBMI.NFBC1966.EUR.JR.230807.txt
+EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/NFBC/Raw/EGG_cIMT.maxLCF.OAD.WOMEN.noBMI.NFBC1966.EUR.JR.230801.txt
 
 
 ##################################################################################################################################################################
@@ -42,18 +42,18 @@ START EASYQC2
   CLEAN --rcdClean is.na(PVAL) --strCleanName numDrop.PVAL.missing
 
 ## Add EAF columns then clean it 
-ADDCOL --rcdAddCol signif((N0+N1)/(N0+N1+N2)) --colOut EAF
-CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
+  ADDCOL --rcdAddCol signif((N1+N2)/(N0+N1+N2)) --colOut EAF
+  CLEAN --rcdClean is.na(EAF) --strCleanName numDrop.EAF.missing
 
 ## remove monomorphics sites: 
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
 
 ## Add MAC and DF columns
-ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
-ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
+  ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
+  ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
 
 ## Filter on DF>=20
-# CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
+  CLEAN --rcdClean DF_ALL<20 --strCleanName numDrop.DF_ALL.20
   CLEAN --rcdClean N<30 --strCleanName numDrop_Nlt30
   CLEAN --rcdClean MAC_ALL<=6 --strCleanName numDrop_MAClet6
 
@@ -64,7 +64,6 @@ ADDCOL --rcdAddCol signif(MAC_ALL*INFO,4) --colOut DF_ALL
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
 
 
 # Filter SNPs on the basis of genotype quality 

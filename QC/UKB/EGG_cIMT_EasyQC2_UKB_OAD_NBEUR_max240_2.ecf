@@ -67,7 +67,6 @@ ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL
   CLEAN --rcdClean abs(BETA)==Inf --strCleanName numDrop.BETA.inf
   CLEAN --rcdClean PVAL<0|PVAL>1 --strCleanName numDrop.invalid.P
   CLEAN --rcdClean SE<=0|SE==Inf --strCleanName numDrop.invalid.SE
-  CLEAN --rcdClean BETA<=0|BETA==Inf --strCleanName numDrop.invalid.BETA
 
 
 # Filter SNPs on the basis of genotype quality 
@@ -162,7 +161,7 @@ AFCHECK --colInFreq EAF
 		--colRefFreq AA1_Freq.ref 
 		--astrColour red;blue;purple
 		--blnPlotAll 0
-		--numLimOutlier 0.2
+		--numLimOutlier 0.3
 
 #		--arcdColourCrit R2.ref<0.3;INFO<0.3;INFO<0.3&R2.ref<0.3
 
