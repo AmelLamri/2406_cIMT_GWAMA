@@ -7,55 +7,28 @@ library(data.table)
 #m_p <- "/home/lamria/avr/Projects/byStudy/EGGC/2211_cIMT_GWAMA/Results/GWAMA/"#
 m_p <- "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI"
 rgma <- paste0(m_p,"/Results/GWAMA/")
-kg_p <- "/home/lamria/avr/Data/1000Genomes/20130502_Release/Genotypes/PLINK/Sample_Subsets/Europeans/SNP_Subsets/mac10/"
-
-# Create empty list 
-  eumaxp <- list() 
-  for (i in 1:4){
-    eumaxp[[i]] <- list() 
-    for (j in 1:3 ){  
-      eumaxp[[i]][[j]] <- list()  
-      for (k in 1:2){  
-        tmp <- list()  
-        }
-      }
-    }
 
 # Open files tables 
 
-  lft <- read.delim(paste0(m_p, "/Results/FilesTables/241018_GWAS_Files.tbl"), head=T, string=F)
+  lft <- read.delim(paste0(m_p, "/Results/FilesTables/241023_GWAS_Files.tbl"), head=T, string=F)
 
-  # eumaxpfs <- lft[which(lft$in_OAD_maxLCFp_EUR_MW_noBMI |lft$in_ADL_maxLCFp_EUR_MW_noBMI | lft$in_YAD_maxLCFp_EUR_MW_noBMI |lft$in_ADO_maxLCFp_EUR_MW_noBMI | lft$in_OAD_maxLCFp_EUR_MW_adjBMI | lft$in_ADL_maxLCFp_EUR_MW_adjBMI | lft$in_YAD_maxLCFp_EUR_MW_adjBMI |lft$in_ADO_maxLCFp_EUR_MW_adjBMI | lft$in_OAD_maxLCFp_EUR_M_noBMI |lft$in_ADL_maxLCFp_EUR_M_noBMI | lft$in_YAD_maxLCFp_EUR_M_noBMI |lft$in_ADO_maxLCFp_EUR_M_noBMI | lft$in_OAD_maxLCFp_EUR_M_adjBMI | lft$in_ADL_maxLCFp_EUR_M_adjBMI | lft$in_YAD_maxLCFp_EUR_M_adjBMI |lft$in_ADO_maxLCFp_EUR_M_adjBMI | lft$in_OAD_maxLCFp_EUR_W_noBMI |lft$in_ADL_maxLCFp_EUR_W_noBMI | lft$in_YAD_maxLCFp_EUR_W_noBMI |lft$in_ADO_maxLCFp_EUR_W_noBMI | lft$in_OAD_maxLCFp_EUR_W_adjBMI | lft$in_ADL_maxLCFp_EUR_W_adjBMI | lft$in_YAD_maxLCFp_EUR_W_adjBMI |lft$in_ADO_maxLCFp_EUR_W_adjBMI ), ]
-    
-    eumaxpfs <- lft[which(lft$Study=="FAMILY" & lft$in_ADL_maxLCFp_EUR  & lft$sexGroup=="W"), ]
-    
+  eumaxpfs <- lft[which(lft$Study=="ALSPAC" & lft$in_OAD_maxLCFp_EUR)  , ]
+    # & lft$sexGroup=="W")
+    #  & lft$pop == "NbEUR" 
 
-
-  #ados <- lft[which((lft$in_ADO_maxLCFp_EUR_MW_noBMI |  lft$in_ADO_maxLCFp_EUR_MW_adjBMI |  lft$in_ADO_maxLCFp_EUR_M_noBMI |  lft$in_ADO_maxLCFp_EUR_M_adjBMI |  lft$in_ADO_maxLCFp_EUR_W_noBMI |  lft$in_ADO_maxLCFp_EUR_W_adjBMI) & lft$Study=="SWS" ), ]
-
-
-  #yad <- lft[which((lft$in_YAD_maxLCFp_EUR_MW_noBMI |  lft$in_YAD_maxLCFp_EUR_MW_adjBMI |  lft$in_YAD_maxLCFp_EUR_M_noBMI |  lft$in_YAD_maxLCFp_EUR_M_adjBMI |  lft$in_YAD_maxLCFp_EUR_W_noBMI |  lft$in_YAD_maxLCFp_EUR_W_adjBMI) & lft$Study=="YFS" ), ]
-
-
-  #adl<- lft[which((lft$in_ADL_maxLCFp_EUR_MW_noBMI |  lft$in_ADL_maxLCFp_EUR_MW_adjBMI |  lft$in_ADL_maxLCFp_EUR_M_noBMI |  lft$in_ADL_maxLCFp_EUR_M_adjBMI |  lft$in_ADL_maxLCFp_EUR_W_noBMI |  lft$in_ADL_maxLCFp_EUR_W_adjBMI) & lft$Study=="YFS"), ]
-  # eumaxpfs <- adl
   
   file.exists(paste0(eumaxpfs[,"QCed_p"]))
   file.exists(paste0(eumaxpfs[,"QCed_p"], "/",eumaxpfs[,"QCed_fn"]))
-
+  file.exists(paste0(eumaxpfs[,"QCed_p"], "/",eumaxpfs[,"aff_fn"]))
 
   options(warn=2)
-
-    # Open gwama data and save for locus zoom 
-    for (n in  1:nrow(eumaxpfs)){ #which(eumaxpfs[,1]=="OAD" :nrow() #
-
-
-    
+    for (n in  1:nrow(eumaxpfs)){ 
+  
         if(!file.exists(paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCed_fn"]))){
         cat ( "file", eumaxpfs[n,2], eumaxpfs[n,4],eumaxpfs[n,6],eumaxpfs[n,7],eumaxpfs[n,"AdjBMI2"], " not found \n")
         next()
         }else{
-        if(!file.exists(paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCed_noDupNoAFO_fn"])) & !file.exists(paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCed_noDupNoAFO_fn"], ".gz" ))){
+        if(!file.exists(paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCednoAFO_fn"])) & !file.exists(paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCednoAFO_fn"], ".gz" ))){
 
           cat ( "running ", eumaxpfs[n,2], eumaxpfs[n,4],eumaxpfs[n,6],eumaxpfs[n,7],eumaxpfs[n,"AdjBMI2"], n,  " \n")
            
@@ -93,12 +66,14 @@ kg_p <- "/home/lamria/avr/Data/1000Genomes/20130502_Release/Genotypes/PLINK/Samp
             
 
             aff <- read.table(paste0(eumaxpfs[n,"QCed_p"], "/", eumaxpfs[n,"aff_fn"]), head=T, string=F)
+
+
             eumaxpfs[n,"N_SNP_QCed_noDup_AFO"] <- length(which(tmpord$cpaid %in% aff$cpaid))
             tmpord_noafo <- tmpord[which(!tmpord$cpaid %in% aff$cpaid ),]
             #eumaxpfs[n,"N_SNP_QCed_noDup_noAFO"] <- nrow(tmpord_noafo)
             cat ( "  saving output file\n")
 
-            write.table(tmpord_noafo, paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCed_noDupNoAFO_fn"]) , row.names=F, col.names=T, quote=F, sep="\t")
+            write.table(tmpord_noafo, paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCednoAFO_fn"]) , row.names=F, col.names=T, quote=F, sep="\t")
 
             #noLO <- as.data.frame(fread(paste0(eumaxpfs[n,"QCed_p"], "/", eumaxpfs[n,"noLO_fn"])))
             #table(noLO$SNPID %in% tmpord_noafo$SNPID  )
@@ -107,7 +82,7 @@ kg_p <- "/home/lamria/avr/Data/1000Genomes/20130502_Release/Genotypes/PLINK/Samp
             cat ( "  zipping output file\n")
 
             #if(!file.exists(paste0(eumaxpfs[n,"QCedgz_fn"], ".gz"))) 
-            gzip (paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCed_noDupNoAFO_fn"]))
+            gzip (paste0(eumaxpfs[n,"QCed_p"], "/",eumaxpfs[n,"QCednoAFO_fn"]))
 
             #tmpord$P-value <- as.numeric(tmpord$P-value)
             # if(!file.exists(gsub("_GWAMA.TBL", "_GWAMA_manh.", eumaxpfs[n,"QCed_fn"]))){

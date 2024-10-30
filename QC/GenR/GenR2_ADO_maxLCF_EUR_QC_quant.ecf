@@ -26,7 +26,7 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 
   EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw/EGG_cIMT.maxLCF.CLD.MW.noBMI.GenR.EUR.MMG.231005.gz
   EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw/EGG_cIMT.maxLCF.CLD.MW.adjBMI.GenR.EUR.MMG.231005.gz
-  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw//received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.MEN.noBMI.GenR.EUR.IFM.231024.MetaScore.assoc.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw//received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.MEN.noBMI.GenR4.EUR.IFM.231024.MetaScore.assoc.gz
   EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw//received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.MEN.adjBMI.GenR4.EUR.IFM.231024.MetaScore.assoc.gz
   EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw//received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.WOMEN.noBMI.GenR4.EUR.IFM.231024.MetaScore.assoc.gz
   EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw//received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.WOMEN.adjBMI.GenR4.EUR.IFM.231024.MetaScore.assoc.gz

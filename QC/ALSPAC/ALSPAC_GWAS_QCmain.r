@@ -5,8 +5,6 @@
     # https://www.uni-regensburg.de/medizin/epidemiologie-praeventivmedizin/genetische-epidemiologie/charge-gli
     # https://homepages.uni-regensburg.de/~wit59712/easyqc/EasyQC_9.0_Commands_140918_2.pdf
 
-
-
     library(EasyQC2)
     library(data.table)
     library(R.utils)
@@ -28,7 +26,11 @@
 #(summary(d[d$INFO_TYPE!=0,"INFO"]))
 
 
-   # d <- fread(paste0(if2, ".gz"))
+
+    d <- fread(paste0("/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw/YAD/ALSPAC_cIMT.maxLCF.YAD.MW.adjBMI.EUR.AL.20240702_3.txt.gz"))
+
+
+
   options(warn=2)
 
   for (pheni in c("maxLCF")){ #
@@ -39,6 +41,8 @@
             filei <- paste0("/ALSPAC_cIMT.", pheni, ".", agi,".",sexi,".",adji,".",popi, ".AL.20240702")
             if1<- paste0(ir_p,"/", agi, "/", filei, ".txt")
             if2<- paste0(or_p,"/", agi, "/", filei,  "_3.txt")
+            if3<- paste0(or_p,"/", agi, "/", filei,  "_r0.3.txt")
+
             if(!dir.exists(paste0(or_p,"/", agi)))dir.create(paste0(or_p,"/", agi))
 
             if( agi %in% c("ADL", "OAD", "AAD") &  sexi %in% c("MW","M")) next()
@@ -71,11 +75,22 @@
               cat (" \n            saving file \n") 
               if(any(is.na(fam$INFO) | is.na(fam$INFO_TYPE) ))warning( " NAs in info \n")
               write.table(fam[!is.na(fam$BETA),], if2, row.names=F, col.names=T, quote=F, sep="\t" )
+
+              write.table(fam[!is.na(fam$BETA) & fam$INFO>=0.3,], if2, row.names=F, col.names=T, quote=F, sep="\t" )
+
+
+
               cat (" \n            zipping file \n") 
               gzip(if2, ext="gz", FUN=gzfile)
               #if(file.exists(if1))file.remove(if1)
 
             }
+            cat (" \n reading file", pheni, sexi, adji, popi, agi, "\n") 
+            fam <- fread(paste0(if2, ".gz"))
+            cat (" \n            saving file \n") 
+            write.table(fam[fam$INFO>=0.3,], if3, row.names=F, col.names=T, quote=F, sep="\t" )
+            cat (" \n            zipping file \n") 
+            gzip(if3, ext="gz", FUN=gzfile)
           } 
         }
       }
@@ -100,4 +115,5 @@
 
     # AAD maxLCF
     setwd(paste0(o_p, "/AAD/maxLCF/EUR"))
-    EasyQC2(paste0(qc2_p, "/1EGG_cIMT_EasyQC2_ALSPAC_maxLCF_AAD.ecf"))
+    EasyQC2(paste0(qc2_p, "/EGG_cIMT_EasyQC2_ALSPAC_maxLCF_AAD.ecf"))
+

@@ -14,15 +14,15 @@ DEFINE	--pathOut /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GW
 		--strMissing NA
 ADJUSTALLELES --colRefA1 EFFECT_ALLELE
               --colRefA2 NON_EFFECT_ALLELE
-		      --colInStrand STRAND
+		          --colInStrand STRAND
               --acolInFreq EAF
               --colInBeta BETA
 
 
 ### Define here the input files: 
 
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/ADL/ALSPAC_cIMT.maxLCF.ADL.W.adjBMI.EUR.AL.20240702_2.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/ADL/ALSPAC_cIMT.maxLCF.ADL.W.noBMI.EUR.AL.20240702_2.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//ADL/ALSPAC_cIMT.maxLCF.ADL.W.adjBMI.EUR.AL.20240702_3.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//ADL/ALSPAC_cIMT.maxLCF.ADL.W.noBMI.EUR.AL.20240702_3.txt.gz
 
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
@@ -43,7 +43,7 @@ CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
 
 
 #replace NA in INFO col for genotyped SNPs to 1 
- EDITCOL --rcdEditCol ifelse(NA,1,INFO) --colEdit INFO
+# EDITCOL --rcdEditCol ifelse(NA,1,INFO) --colEdit INFO
 
 
 ## Add MAC and DF columns

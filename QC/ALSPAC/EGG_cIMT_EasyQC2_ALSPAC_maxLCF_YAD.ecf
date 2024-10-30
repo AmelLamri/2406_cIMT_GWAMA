@@ -21,12 +21,12 @@ ADJUSTALLELES --colRefA1 EFFECT_ALLELE
 
 ### Define here the input files: 
 
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.MW.noBMI.EUR.AL.20240702_2.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.MW.adjBMI.EUR.AL.20240702_2.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.M.adjBMI.EUR.AL.20240702_2.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.M.noBMI.EUR.AL.20240702_2.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.W.adjBMI.EUR.AL.20240702_2.txt.gz
-  EASYIN --fileIn /genetics/Users/lamria/ALSPAC/Projects/2406_ALSPAC_cIMT_GWAS_PHRI/Outputs/YAD/ALSPAC_cIMT.maxLCF.YAD.W.noBMI.EUR.AL.20240702_2.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//YAD/ALSPAC_cIMT.maxLCF.YAD.MW.noBMI.EUR.AL.20240702_3.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//YAD/ALSPAC_cIMT.maxLCF.YAD.MW.adjBMI.EUR.AL.20240702_3.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//YAD/ALSPAC_cIMT.maxLCF.YAD.M.adjBMI.EUR.AL.20240702_3.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//YAD/ALSPAC_cIMT.maxLCF.YAD.M.noBMI.EUR.AL.20240702_3.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//YAD/ALSPAC_cIMT.maxLCF.YAD.W.adjBMI.EUR.AL.20240702_3.txt.gz
+  EASYIN --fileIn /genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/ALSPAC/Raw//YAD/ALSPAC_cIMT.maxLCF.YAD.W.noBMI.EUR.AL.20240702_3.txt.gz
 
 ##################################################################################################################################################################
 ## EASYQC Scripting interface:
@@ -44,9 +44,6 @@ START EASYQC2
 
 ## remove monomorphics sites: 
 CLEAN --rcdClean EAF==0|EAF==1 --strCleanName numDrop.EAF.monomorph
-
-#replace NA in INFO col for genotyped SNPs to 1 
- EDITCOL --rcdEditCol ifelse(NA,1,INFO) --colEdit INFO
 
 ## Add MAC and DF columns
 ADDCOL --rcdAddCol signif(2*pmin(EAF,1-EAF)*N,4) --colOut MAC_ALL

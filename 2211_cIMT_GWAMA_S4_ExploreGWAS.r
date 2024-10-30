@@ -7,123 +7,104 @@ library(data.table)
 #m_p <- "/home/lamria/avr/Projects/byStudy/EGGC/2211_cIMT_GWAMA/Results/GWAMA/"#
 m_p <- "/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI"
 rgma <- paste0(m_p,"/Results/GWAMA/")
-kg_p <- "/home/lamria/avr/Data/1000Genomes/20130502_Release/Genotypes/PLINK/Sample_Subsets/Europeans/SNP_Subsets/mac10/"
 
 # Create empty list 
   eumaxp <- list() 
   for (i in 1:4){
     eumaxp[[i]] <- list() 
-    for (j in 1:3 ){  
+    for (j in 1:2 ){  
       eumaxp[[i]][[j]] <- list()  
-      for (k in 1:2){  
+      for (k in 1:3){  
         eumaxp[[i]][[j]][[k]] <- list()  
         }
       }
     }
-
-
-# Create a table of GWAMA files 
-  fts <- as.data.frame(matrix(ncol=11, nrow=3*5*2))
-  fts[,1] <- rep( c("ADO", "YAD", "ADL", "OAD", "AAD"), 6)
-  fts[,2] <- rep( c("MW", "M", "W"), 10)
-  fts[,3] <- rep( c("noBMI", "adjBMI"), 15)
-  fts[,4] <- paste(fts[,1], fts[,2] ,fts[,3] , "eur_maxp",sep="_")
-  fts[,5] <- 1:5
-  fts[,6] <- 1:3
-  fts[,7] <- 1:2
-  fts <- fts[order(fts[,5], fts[,6], fts[,7]), ]
-  fts[,8] <- paste0(rgma,"/",fts[,1], "/EUR/maxLCFp/", fts[,3],"/240926_maxIMT_",fts[,1],"_EUR_",fts[,2], "_", fts[,3] , "_GWAMA.TBL")
-  fts[,9] <- gsub("_GWAMA.TBL","_GWAMA_ChrBp.TBL",fts[,8])
-  colnames(fts) <- c("AgeGr", "SexGr", "Adj", "abv", "i", "j", "k", "ifn", "ifn2", "N_SNP", "N_SNP_nodup")
-
-
-# Correct file names in GWAMA files table 
-  fts[fts$AgeGr=="OAD","ifn"] <- gsub("GWAMA.TBL","GWAMA1.TBL", fts[fts$AgeGr=="OAD","ifn"])
-  fts[fts$AgeGr=="OAD","ifn"] <- gsub("240926","241005", fts[fts$AgeGr=="OAD","ifn"])
-
-# Keep only a few columns
-  ftss <- fts[!is.na(fts$N_SNP),c(1:7, 10:11)]
-  ftss[,ncol(ftss)] <- paste(ftss[,1], ftss[,2] , ftss[,3] , sep="_")
-
 # Open files tables 
 
-  lft <- read.delim(paste0(m_p, "/Results/241004_GWAS_Files_noAFO.tbl"), head=T, string=F)
-  eumaxpfs <- unique(lft[which(lft$AdjBMI2=="noBMI" & lft$sexGroup == "MW" & lft$in_OAD_maxLCFp_EUR_MW_noBMI |lft$in_ADL_maxLCFp_EUR_MW_noBMI | lft$in_YAD_maxLCFp_EUR_MW_noBMI |lft$in_ADO_maxLCFp_EUR_MW_noBMI ), c("Study","pop", "pop2", "AgeGroup","sexGroup", "AdjBMI","AdjBMI2","cIMT_measure","MetaA_p")])
+  lft <- read.delim(paste0(m_p, "/Results/FilesTables/241023_GWAS_Files.tbl"), head=T, string=F)
+  eumaxpfs <- unique(lft[which(lft$in_ADO_maxLCFp_EUR), c("Study","pop", "pop2", "AgeGroup","sexGroup", "AdjBMI","AdjBMI2","cIMT_measure","QCednoAFO_fn","QCed_p","MetaA_maxp_p"  )])
   nrow(eumaxpfs)
+  # lft$AdjBMI2=="noBMI"
+  # lft$sexGroup == "MW"
+  unique(eumaxpfs[,c("Study","pop2", "AgeGroup","sexGroup", "AdjBMI2")])
 
-  unique(eumaxpfs[,c("pop2", "AgeGroup","sexGroup", "AdjBMI2")])
+fts <- unique( unique(lft[which(lft$in_maxLCFp_EUR), c("pop", "pop2", "AgeGroup","sexGroup", "AdjBMI","AdjBMI2","MetaA_maxp_p"  )]))
+fts$ifn <- paste0(fts$MetaA_maxp_p,"/241023_maxLCFp_",fts[,"AgeGroup"],"_",fts[,"pop2"],"_",fts[,"sexGroup"], "_", fts[,"AdjBMI2"] , "_GWAMA_noAFO1.TBL")
+fts$ifn2 <- gsub(".TBL","_ChrBp.TBL",fts$ifn)
+  agrs <- unique(fts[,"AgeGroup"])
+  sgrs <- unique(fts[,"sexGroup"])
+  adjs <- unique(fts[,"AdjBMI"])
+  pops <- unique(fts[,"pop2"])
 
-,
+ fts[fts$AgeGroup=="ADO","i"]     <- 1
+ fts[fts$AgeGroup=="YAD","i"]     <- 2
+ fts[fts$AgeGroup=="ADL","i"]     <- 3
+ fts[fts$AgeGroup=="OAD","i"]     <- 4
+ fts[fts$AgeGroup=="AAD","i"]     <- 5
+
+ fts[fts$AdjBMI2=="noBMI","j"]     <- 1
+ fts[fts$AdjBMI2=="adjBMI","j"]     <- 2
+
+ fts[fts$sexGroup=="MW","k"]     <- 1
+ fts[fts$sexGroup=="M","k"]     <- 2
+ fts[fts$sexGroup=="W","k"]     <- 3
+
+# colnames(fts) <- c(1"AgeGr", 2"SexGr", 3"Adj", 4"abv", 5"i", 6"j",7 "k", 8"ifn", 9"ifn2", 10"N_SNP", 11"N_SNP_nodup")
+
 # Open gwama data and save for locus zoom 
-  for (n in 7:nrow(fts)){ #which(fts[,1]=="OAD" 
-    i <- fts[n,5]
-    j <- fts[n,6]
-    k <- fts[n,7]
-    if(!file.exists(fts[n,8])){
-      cat ( "file", fts[n,4], " not found \n")
+  for (n in 1:nrow(fts)){ #which(fts[,1]=="OAD" 
+
+    if(!file.exists(fts[n,"ifn"])){
+      cat ( "file", fts[n,"AgeGroup"], fts[n,"sexGroup"], fts[n,"AdjBMI2"], " not found \n")
       next()
     }else{
-      if(file.exists(paste0(fts[n,9], ".gz" ))) {
-        cat ( "running ", fts[n,4], " \n")
-        eumaxp[[i]][[j]][[k]] <- as.data.frame(fread(fts[n,8]))
-        fts[n,11] <- nrow(eumaxp[[i]][[j]][[k]])
-        names(eumaxp)[i] <- fts[n,1]
-        names(eumaxp[[i]])[j] <- fts[n,2]
-        names(eumaxp[[i]][[j]])[k] <- fts[n,3]
-       } else if (file.exists(fts[n,9]) & !file.exists(paste0(fts[n,9], ".gz" ))){
-        cat ( "running ", fts[n,4], " \n")
-        eumaxp[[i]][[j]][[k]] <- as.data.frame(fread(fts[n,9]))
-        fts[n,11] <- nrow(eumaxp[[i]][[j]][[k]])
-        names(eumaxp)[i] <- fts[n,1]
-        names(eumaxp[[i]])[j] <- fts[n,2]
-        names(eumaxp[[i]][[j]])[k] <- fts[n,3]
-        gzip (fts[n,9])
-       } else if(!file.exists(fts[n,9]) & !file.exists(paste0(fts[n,9], ".gz" ))){
-        cat ( "running ", fts[n,4], " \n")
-        eumaxp[[i]][[j]][[k]] <- as.data.frame(fread(fts[n,8]))
-        names(eumaxp)[i] <- fts[n,1]
-        names(eumaxp[[i]])[j] <- fts[n,2]
-        names(eumaxp[[i]][[j]])[k] <- fts[n,3]
-        fts[n,10] <- nrow(eumaxp[[i]][[j]][[k]])
-        tmp <- eumaxp[[i]][[j]][[k]]
-        #tmp$chr<-sapply(strsplit(tmp$MarkerName,":"), `[`, 1)
-        #tmp$bp<-sapply(strsplit(tmp$MarkerName,      ":"), `[`, 2)
-        #tmp$chr<- as.numeric(tmp$chr)
-        #tmp$bp <- format(as.numeric(tmp$bp), scientific = FALSE) 
+      if(class(eumaxp[[fts[n,"i"]]][[fts[n,"j"]]][[fts[n,"k"]]]) == "data.frame") next()
+      if(file.exists(paste0(fts[n,"ifn2"], ".gz" ))) {
+        cat ( "running 1- ", fts[n,2], fts[n,3], fts[n,4], "maxIMTp \n")
+        eumaxp[[fts[n,"i"]]][[fts[n,"j"]]][[fts[n,"k"]]] <- as.data.frame(fread(paste0(fts[n,"ifn2"], ".gz" )))
+        tmpord <- eumaxp[[fts[n,"i"]]][[fts[n,"j"]]][[fts[n,"k"]]] 
+        names(eumaxp)[fts[n,"i"]] <- fts[n,"AgeGroup"]
+        names(eumaxp[[fts[n,"i"]]])[fts[n,"j"]] <-  fts[n,"AdjBMI2"]
+        names(eumaxp[[fts[n,"i"]]][[fts[n,"j"]]])[fts[n,"k"]] <- fts[n,"sexGroup"]
+
+ 
+       } else if(!file.exists(paste0(fts[n,"ifn2"], ".gz" ))){
+        cat ( "running 2-", fts[n,"AgeGroup"], fts[n,"sexGroup"], fts[n,"AdjBMI2"], "maxIMTp \n")
+        tmpord <- as.data.frame(fread(fts[n,"ifn"]))
+        tmpord$Chromosome <- as.numeric(tmpord$Chromosome)
+        tmpord$Position<- as.numeric(tmpord$Position)
+        tmpord <- tmpord[which((tmpord$Chromosome)%in% 1:22),]
+        names(eumaxp)[fts[n,"i"]] <- fts[n,"AgeGroup"]
+        names(eumaxp[[fts[n,"i"]]])[fts[n,"j"]] <-  fts[n,"AdjBMI2"]
+        names(eumaxp[[fts[n,"i"]]][[fts[n,"j"]]])[fts[n,"k"]] <- fts[n,"sexGroup"]
+
         
         # re-order chr and position before save for locus zoom
-        tmpord <- tmp[which(!is.na(tmp$chr)),]
-        tmpord$chrpos <- paste0(tmpord$CHR, tmpord$POS)
-        tmpord <-tmpord[!duplicated(tmpord$chrpos ) & !duplicated(tmpord$chrpos, fromLast=T), ] 
-        tmpord <-tmpord[order(tmpord[,"CHR"], tmpord[,"POS"]), ] 
-        eumaxp[[i]][[j]][[k]] <- tmpord
-        fts[n,11] <- nrow(tmpord)
+        tmpord$chrpos <- paste0(tmpord$Chromosome, tmpord$Position)
+        tmpord <- tmpord[!duplicated(tmpord$chrpos ) & !duplicated(tmpord$chrpos, fromLast=T), ] 
+        tmpord <- tmpord[order(tmpord[,"Chromosome"], tmpord[,"Position"]), ] 
+
+        #eumaxp[[fts[n,"i"]]][[fts[n,"j"]]][[fts[n,"k"]]] <- tmpord
+
         # Save file with chr and position for locus zoom 
-        #if(!file.exists(fts[n,9]) )
-        #write.table(tmpord, fts[n,9] , row.names=F, col.names=T, quote=F, sep="\t")
-        #if(!file.exists(paste0(fts[n,9], ".gz"))) 
-        #gzip (fts[n,9])
-        #tmpord$P-value <- as.numeric(tmpord$P-value)
-        # if(!file.exists(gsub("_GWAMA.TBL", "_GWAMA_manh.", fts[n,8]))){
-        #   jpeg(gsub("_GWAMA.TBL", "_GWAMA_manh.", fts[n,8]))
-        #     manhattan(tmpord[which(tmpord$chr %in% 1:22),],p="P-value", chr="chr", bp="bp", snp="MarkerName" )
-        #   dev.off()
-        # } 
+
+        write.table(tmpord, fts[n,"ifn2"] , row.names=F, col.names=T, quote=F, sep="\t")
+        #if(!file.exists(paste0(fts[n,"ifn2"], ".gz"))) 
+        gzip (fts[n,"ifn2"])
       }
     }
   }
 
+# Plot Manhattan 
 
-
-  for (i in 1:4){
-    for (j in 1:3 ){  
-      for (k in 1:2){  
-        cat( i, j, k, colnames(eumaxp[[i]][[j]][[k]]), "\n\n\n\n" )
-        }
+      tmpord$"P-value" <- as.numeric(tmpord$"P-value")
+      if(!file.exists(gsub("_ChrBp.TBL.gz","_Manh.jepg", fts[n,"ifn2"]))){
+        jpeg(gsub("_ChrBp.TBL.gz","_Manh.jepg", fts[n,"ifn2"]))
+          manhattan(tmpord,p="P-value", chr="Chromosome", bp="Position", snp="MarkerName" )
+        dev.off()
+ 
       }
-    }
-
-
+`
 # Keep only significant loci 
   sig <- eumaxp
 

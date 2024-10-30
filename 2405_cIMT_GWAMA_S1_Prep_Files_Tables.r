@@ -18,7 +18,7 @@ d <- as.data.frame(read_excel(paste0(o_p,"/FilesTables/241017_Files.xlsx" )))
 stds <- unique(d$Study)
 
 
-#Fill in empty raw file paths 
+# Fill in empty raw file paths 
   table(d$pop, useNA="ifany")
   table(is.na(d$RawFilePaths), useNA="ifany")
   table(d[is.na(d$RawFilePaths), "Study"] )
@@ -40,7 +40,7 @@ stds <- unique(d$Study)
   d[d$AgeGroup=="xAGE", "AgeGroup"] <- "AADxAGE"
 
 
-ages <- c("OAD", "ADL", "YAD", "AAD", "ADO", "AADxAGE")
+  ages <- c("OAD", "ADL", "YAD", "AAD", "ADO", "AADxAGE")
 
 
 # Correct some file names 
@@ -54,6 +54,10 @@ ages <- c("OAD", "ADL", "YAD", "AAD", "ADO", "AADxAGE")
   d[d$Study == "UKB", "File"] <- gsub("240920", "240927", d[d$Study == "UKB", "File"])
  
   d[which(d$Study=="UKB" & d$pop=="NbEUR"),"File"] <- gsub("NbEUR", "NBEUR", d[which(d$Study=="UKB" & d$pop=="NbEUR"),"File"] )
+  
+  d[which(d$Study=="GenR2" & d$sexGroup=="M"),"File"] <- gsub(".GenR.EUR", ".GenR4.EUR", d[which(d$Study=="GenR2" & d$sexGroup=="M"),"File"] )
+
+
 
 # Correct some file paths 
   d[d$Study=="FAMILY", "RawFilePaths"] <- paste0("/genetics/Nutrigen/FAMILY/2301_FAMILY_cIMT_GWAS_PHRI/Outputs/",d[d$Study=="FAMILY", "AgeGroup"])
@@ -83,6 +87,23 @@ ages <- c("OAD", "ADL", "YAD", "AAD", "ADO", "AADxAGE")
   # Alpac daults are only moms  
   #d <- d[-which(d$Study == "FAMILY" & d$AgeGroup %in% c("OAD", "AAD", "ADL") & d$sexGroup %in% c("M")), ] 
 
+# Create AdjBMI2 variable
+  adjsd <- d$AdjBMI
+  table(adjsd)
+  d[d$AdjBMI=="T","AdjBMI2"] <- "adjBMI"
+  d[d$AdjBMI=="F","AdjBMI2"] <- "noBMI"
+  table(d$AdjBMI)
+  table(d$AdjBMI2)
+  d$AdjBMI <- as.logical(d$AdjBMI)
+
+
+# Correct some "adjBMI" and "noBMI" file names errors in File
+  intersect(grep("noBMI", d$"File"), which( d$AdjBMI2=="adjBMI"))
+  d[intersect(grep("noBMI", d$"File"), which( d$AdjBMI2=="adjBMI")), c("AdjBMI2", "File")] # 610
+  d[intersect(grep("noBMI", d$"File"), which( d$AdjBMI2=="adjBMI")), "File"] <- gsub("noBMI", "adjBMI", d[intersect(grep("noBMI", d$"File"), which( d$AdjBMI2=="adjBMI")), "File"])
+
+  intersect(grep("adjBMI", d$"File"), which( d$AdjBMI2=="noBMI"))
+  d[intersect(grep("adjBMI", d$"File"), which( d$AdjBMI2=="noBMI")), c( "File")]  <- gsub("adjBMI", "noBMI", d[intersect(grep("adjBMI", d$"File"), which( d$AdjBMI2=="noBMI")), c( "File")] )
 
 
 
@@ -149,6 +170,9 @@ ages <- c("OAD", "ADL", "YAD", "AAD", "ADO", "AADxAGE")
     if(length(grep( d[i,"pop"], d[i,"File"]) ) == 0 ) cat (i, "\n")
     } #all good 
 
+# Rename file names to make it homogeneous 
+  # file.rename("/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw/received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.MEN.noBMI.GenR.EUR.IFM.231024.MetaScore.assoc.gz","/genetics/MixedStudies/Projects/2211_cIMT_GWAMA_PHRI/Results/GWAS/GenR2/Raw/received240931/GenR4_SEX_stratified_byIrene/EGG_cIMT.maxLCF.CLD.MEN.noBMI.GenR4.EUR.IFM.231024.MetaScore.assoc.gz")
+
 
 
 # Create variable to see if raw- modified files exist 
@@ -161,70 +185,73 @@ ages <- c("OAD", "ADL", "YAD", "AAD", "ADO", "AADxAGE")
   # Makesure sure all modified Files exist
   table(duplicated(d$File))
   #FALSE 650
+  d[duplicated(d$File) | duplicated(d$File, fromLast=T), "File"]
 
   # unique(d[!d$File_Exists & d$AgeGroup=="ADO", c("Study", "pop", "AgeGroup", "cIMT_measure", "RawFilePaths_m", "File2")])
 
   unique(d[!d$File_Exists & d$AgeGroup=="ADO" &  d$cIMT_measure=="maxLCF" , c("Study", "pop", "AgeGroup", "cIMT_measure","RawFilePaths_m", "File2")])
+
+
+
+
+
+
+
 # Create a variable for QCed files
   d$QCed_fn <- paste0("CLEANED.", gsub(".txt.gz", "", d$File2),".cpaid.gz")
   d$QCed_fn <- gsub(".gz.cpaid.gz", ".cpaid.gz",d$QCed_fn  ) 
   d[d$Study=="UKB", "QCed_fn"  ] <- gsub("240920", "240927", d[d$Study=="UKB", "QCed_fn"  ] ) 
   d[d$Study=="GenR2", "QCed_fn"]  <- gsub(".MetaScore.assoc.cpaid.gz", ".cpaid.MetaScore.assoc.gz", d[d$Study=="GenR2", "QCed_fn"]) 
-
-  adjsd <- d$AdjBMI
-  table(adjsd)
-  d[d$AdjBMI=="T","AdjBMI2"] <- "adjBMI"
-  d[d$AdjBMI=="F","AdjBMI2"] <- "noBMI"
-  table(d$AdjBMI)
-  table(d$AdjBMI2)
-  d$AdjBMI <- as.logical(d$AdjBMI)
-
-   d$MetaA_p <- paste0(ma_p, "/", d$AgeGroup, "/", d$cIMT_measure, "/", d$pop2, "/", d$sexGroup, "/", d$AdjBMI2)
+  d[d$Study=="ALSPAC", "QCed_fn"]  <- gsub("20240702", "20240702_3", d[d$Study=="ALSPAC", "QCed_fn"] ) 
+  d[d$Study=="UKB" & d$pop=="NbEUR", "QCed_fn"  ]<- gsub("NbEUR","NBEUR",d[d$Study=="UKB" & d$pop=="NbEUR", "QCed_fn"  ])
 
 
-#Create a variable for QCed file paths
+ 
+  d$MetaA_p <- paste0(ma_p, "/", d$AgeGroup, "/", d$cIMT_measure, "/", d$pop2, "/", d$sexGroup, "/", d$AdjBMI2)
+  d$MetaA_maxp_p <- paste0(ma_p, "/", d$AgeGroup, "/", d$pop2, "/maxLCFp/", d$AdjBMI2)
+
+# Create a variable for QCed file paths
   d$QCed_p <- paste0(gw_p,"/",d$Study, "/QCed","/", d$AgeGroup,"/", d$cIMT_measure,"/",d$pop )
   
   d[d$Study=="UKB" & d$cIMT_measure == "maxIMT240", "QCed_p"] <- gsub("maxIMT240", "maxIMT240_2",d[d$Study=="UKB" & d$cIMT_measure == "maxIMT240", "QCed_p"])
   d[d$Study=="UKB" & d$pop == "NbEUR", "QCed_p"] <- gsub("NbEUR", "NBEUR",d[d$Study=="UKB" & d$pop == "NbEUR", "QCed_p"])
 
-
 # See if QCed files exist 
 
-for (i in 1:nrow(d)){
-  if (!dir.exists(d$QCed_p[i])){
-    dir.create(d$QCed_p[i], rec=T)
+  for (i in 1:nrow(d)){
+    if (!dir.exists(d$QCed_p[i])){
+      dir.create(d$QCed_p[i], rec=T)
+      }
     }
+
+
+  for (i in 1:nrow(d)){
+    qcf <- paste0(d$QCed_p[i] ,"/",  d$QCed_fn[i] )
+    if( file.exists(qcf)) {
+      d$QCed_File_Exists[i] <- T
+      } 
+    if(!file.exists(qcf)) {
+      d$QCed_File_Exists[i] <- F
+      }
   }
 
-
-for (i in 1:nrow(d)){
-  qcf <- paste0(d$QCed_p[i] ,"/",  d$QCed_fn[i] )
-  if( file.exists(qcf)) {
-    d$QCed_File_Exists[i] <- T
-    } 
-  if(!file.exists(qcf)) {
-    d$QCed_File_Exists[i] <- F
-    }
-}
-
-table(d$QCed_File_Exists)
- # FALSE  TRUE
- # 548   102
+  table(d$QCed_File_Exists)
+   # FALSE  TRUE
+   # 548   96
 
 
 
 
   #d[d$QCed_File_Exists & d$AgeGroup =="OAD" & d$cIMT_measure =="maxIMT240" & d$Study=="UKB",c("QCed_File_Exists" ,"pop","sexGroup")]
 
- # !d$QCed_File_Exists 
- # d$Study=="GenR2"
- # d$AdjBMI2=="adjBMI"
- # d$AgeGroup
- # d$pop2 =="EUR"
- # d$cIMT_measure =="maxLCF"
- # d$sexGroup%in% c("M","W")
- # c("Study", "pop", "AgeGroup", "cIMT_measure", "sexGroup", "QCed_fn", "QCed_p", "pop2", "QCed_File_Exists")
+  # !d$QCed_File_Exists 
+  # d$Study=="GenR2"
+  # d$AdjBMI2=="adjBMI"
+  # d$AgeGroup
+  # d$pop2 =="EUR"
+  # d$cIMT_measure =="maxLCF"
+  # d$sexGroup%in% c("M","W")
+  # c("Study", "pop", "AgeGroup", "cIMT_measure", "sexGroup", "QCed_fn", "QCed_p", "pop2", "QCed_File_Exists")
 
 
 # Generate file names for easyQC 
@@ -460,14 +487,6 @@ table(d$QCed_File_Exists)
 
 
 
-  d[which(d$Study=="UKB" & d$pop=="NbEUR"), "in_OAD_maxLCFp_EUR_MW_noBMI"]
-  
-  ==T & d$sexGroup=="MW" & d$AdjBMI==F), "in_OAD_maxLCFp_EUR_MW_noBMI"] <- T
-
-
-
-
-
 # Create variable for files for AFO and no liftover 
   d$aff_fn <- gsub("CLEANED.", "", d[,"QCed_fn"])
   d$aff_fn <- gsub(".cpaid.gz", ".AFCHECK.outlier.txt", d[,"aff_fn"])
@@ -477,6 +496,14 @@ table(d$QCed_File_Exists)
   d$noLO_fn <- gsub(".cpaid.gz", ".notlifted.txt",  d$noLO_fn)
   d$noLO_fn <- gsub(".cpaid.MetaScore.assoc.gz", ".notlifted.MetaScore.assoc.txt",  d$noLO_fn)
 
+# Create variable in_maxLCFp_EUR
+
+  d[which( d$in_ADO_maxLCFp_ME | d$in_YAD_maxLCFp_ME | d$in_ADL_maxLCFp_ME | d$in_OADL_maxLCFp_ME ),"in_maxLCFp"] <- T
+  
+  d[which( d$in_ADO_maxLCFp_EUR | d$in_YAD_maxLCFp_EUR | d$in_ADL_maxLCFp_EUR | d$in_OAD_maxLCFp_EUR ),"in_maxLCFp_EUR"] <- T
+  table(d$in_maxLCFp_EUR)
+  # TRUE
+  # 112 
 
 # See who's missing QCed file
   d[which(!d$QCed_File_Exists & d$in_ADO_maxLCF_EUR),c("Study", "sexGroup", "AdjBMI2")]
@@ -485,18 +512,26 @@ table(d$QCed_File_Exists)
    d[which(!d$QCed_noAFO_File_Exists & d$in_ADO_maxLCF_EUR) ,c("Study", "sexGroup",  "AdjBMI2", "QCednoAFO_fn")] #, "QCednoAFO_fn"
 
 
+# Get names of files to copy for ALSPAC And FAMILT
+  tocopy <- d[which(d$Study %in% c("FAMILY", "ALSPAC") & d$sexGroup=="W" & d$in_maxLCFp_EUR), c("QCed_p","QCednoAFO_fn")]
+
+ d[which(d$Study %in% c("GenR2") & d$sexGroup=="M" & d$in_ADO_maxLCFp_EUR_M_adjBMI), c("AdjBMI2","QCednoAFO_fn")]
+
+
 
 
 # Get list of files for meta-A 
 
-  mtav <- "maxLCFp"
-  selcv <- "in_ADO_maxLCFp_EUR_MW_adjBMI" 
-  #meta-A input files 
-    fns <- paste0(d[which(d[,selcv]) , "QCed_p"], "/", d[which(d[,selcv]) , "QCednoAFO_fn"])
-    if(any(!file.exists(fns))) fns[which(!file.exists(fns))]
+    mtav <- "maxLCFp"
+    selcv <- "in_ADO_maxLCFp_EUR_M_adjBMI" 
+    #meta-A input files 
+      fns <- paste0(d[which(d[,selcv]) , "QCed_p"], "/", d[which(d[,selcv]) , "QCednoAFO_fn"])
+      if(any(!file.exists(fns))) fns[which(!file.exists(fns))]
+    # MetaA path + file name  
+      maf <- unique(paste0(ma_p, "/",d[which(d[,selcv]) , "AgeGroup"], "/",d[which(d[,selcv]) , "pop2"], "/", mtav, "/", d[which(d[,selcv]) , "AdjBMI2"], "/241023_", mtav, "_", d[which(d[,selcv]) , "AgeGroup"], "_",d[which(d[,selcv]) , "pop2"], "_", d[which(d[,selcv]) , "sexGroup"], "_", d[which(d[,selcv]) , "AdjBMI2"], "_GWAMA_noAFO"))
 
- # MetaA path + file name  
-  maf <- unique(paste0(ma_p, "/",d[which(d[,selcv]) , "AgeGroup"], "/",d[which(d[,selcv]) , "pop2"], "/", mtav, "/", d[which(d[,selcv]) , "AdjBMI2"], "/241015_", mtav, "_", d[which(d[,selcv]) , "AgeGroup"], "_",d[which(d[,selcv]) , "pop2"], "_", d[which(d[,selcv]) , "sexGroup"], "_", d[which(d[,selcv]) , "AdjBMI2"], "_GWAMA_noAFO"))
+
+
 
  # MetaA path 
   MetaA_p <- paste0(ma_p, "/",d[which(d[,selcv]) , "AgeGroup"], "/", mtav, "/", d[which(d[,selcv]) , "AgeGroup"], "_",d[which(d[,selcv]) , "pop2"], "/", d[which(d[,selcv]) , "sexGroup"], "/", d[which(d[,selcv]) , "AdjBMI2"])
@@ -505,23 +540,8 @@ table(d$QCed_File_Exists)
   paste0( "/241015_", mtav, "_", d[which(d[,selcv]) , "AgeGroup"], "_",d[which(d[,selcv]) , "pop2"], "_", d[which(d[,selcv]) , "sexGroup"], "_", d[which(d[,selcv]) , "AdjBMI2"], "_GWAMA_noAFO")
 
 # Save output table 
-  write.table(d,paste0(o_p,"/FilesTables/241022_GWAS_Files.tbl"), row.names=F, col.names=T, quote=F, sep="\t")
+  write.table(d,paste0(o_p,"/FilesTables/241023_GWAS_Files.tbl"), row.names=F, col.names=T, quote=F, sep="\t")
 
+d <- read.delim(paste0(o_p,"/FilesTables/241023_GWAS_Files.tbl"), head=T, string=FALSE)
 
-
-
-
-
-tbg <- d[which(d$in_YAD_maxLCFp_EUR_W_noBMI | d$in_YAD_maxLCFp_EUR_M_noBMI | d$in_YAD_maxLCFp_EUR_MW_noBMI | d$in_ADO_maxLCFp_EUR_W_noBMI | d$in_ADO_maxLCFp_EUR_M_noBMI | d$in_ADO_maxLCFp_EUR_MW_noBMI |d$in_ADL_maxLCFp_EUR_W_noBMI | d$in_ADL_maxLCFp_EUR_M_noBMI | d$in_ADL_maxLCFp_EUR_MW_noBMI | d$in_OAD_maxLCFp_EUR_W_noBMI | d$in_OAD_maxLCFp_EUR_M_noBMI | d$in_OAD_maxLCFp_EUR_MW_noBMI ), c("Study", "pop", "pop2", "AgeGroup","AdjBMI","AdjBMI2","sexGroup","cIMT_measure", "QCed_fn", "MetaA_p")]
-tbg$in_maxLCFp <- T
-tbg$Gr <- paste(tbg$"AgeGroup", "maxLCFp", tbg$pop2, tbg$sexGroup, tbg$AdjBMI2, sep="_")
-
-tbg$metaA_fn <- paste("maxLCFp",tbg$"AgeGroup",  tbg$pop2, tbg$sexGroup, tbg$AdjBMI2, "_GWAMA_1.TBL", sep="_")
-
-
-write.table(tbg,paste0(o_p,"/241010_GWAMA_Files.tbl"), row.names=F, col.names=T, quote=F, sep="\t")
-
-# SelectionVariables 
-
-selectVs <- c("in_ADO_maxLCF_EUR" , "in_YAD_maxLCFp_EUR", "in_ADO_maxLCFp_EUR", "in_ADO_maxLCFp_ME", "in_YAD_maxLCF_EUR",  "in_ADO_maxLCF_ME",   "in_ADL_maxLCF_ME", "in_ADL_maxLCF_EUR",  "in_ADL_maxLCFp_EUR", "in_ADL_maxLCFp_ME", "in_OAD_maxLCF_EUR",  "in_OAD_maxLCF_ME",   "in_OAD_maxLCFp_EUR", "in_OAD_maxLCFp_ME")
 
